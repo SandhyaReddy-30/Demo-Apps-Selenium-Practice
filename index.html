@@ -6,633 +6,207 @@
 <title>DemoApps | Selenium Practice</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #161920;
-    --card: #1c1f2a;
-    --border: #2a2f3e;
-    --accent: #00e5a0;
-    --accent2: #7b5fff;
-    --accent3: #ff5f87;
-    --text: #e8ecf5;
-    --muted: #6b728a;
-    --mono: 'Space Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    display: flex;
-  }
-
-  /* ─── Sidebar ─── */
-  #sidebar {
-    width: 260px;
-    min-height: 100vh;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0; top: 0;
-    overflow-y: auto;
-    z-index: 100;
-  }
-
-  .logo {
-    padding: 24px 20px 16px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo h1 {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    color: var(--accent);
-  }
-
-  .logo p {
-    font-size: 11px;
-    color: var(--muted);
-    font-family: var(--mono);
-    margin-top: 4px;
-  }
-
-  .nav-section {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    color: var(--muted);
-    padding: 0 20px 8px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 20px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    transition: all 0.15s;
-    border-left: 3px solid transparent;
-  }
-
-  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-
-  .nav-item.active {
-    color: var(--accent);
-    background: rgba(0, 229, 160, 0.07);
-    border-left-color: var(--accent);
-  }
-
-  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-
-  /* ─── Main ─── */
-  #main {
-    margin-left: 260px;
-    flex: 1;
-    padding: 40px;
-    min-height: 100vh;
-  }
-
-  .page { display: none; animation: fadeIn 0.25s ease; }
-  .page.active { display: block; }
-
-  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
-
-  .page-header {
-    margin-bottom: 32px;
-  }
-
-  .page-header h2 {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
-  .page-header p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 6px;
-    font-family: var(--mono);
-  }
-
-  .tag {
-    display: inline-block;
-    background: rgba(0,229,160,0.12);
-    color: var(--accent);
-    font-size: 10px;
-    font-family: var(--mono);
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-left: 10px;
-    vertical-align: middle;
-  }
-
-  /* ─── Cards ─── */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    margin-bottom: 24px;
-  }
-
-  .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--accent2);
-    font-family: var(--mono);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .card-title::before {
-    content: '//';
-    color: var(--muted);
-  }
-
-  /* ─── Form elements ─── */
-  label {
-    display: block;
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-  }
-
-  input[type="text"], input[type="email"], input[type="password"],
-  input[type="number"], textarea, select {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 13px;
-    padding: 10px 14px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 16px;
-  }
-
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(0,229,160,0.1);
-  }
-
-  textarea { resize: vertical; min-height: 90px; }
-
-  select option { background: var(--card); }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  /* ─── Buttons ─── */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-    border: none;
-    margin-right: 8px;
-    margin-bottom: 8px;
-  }
-
-  .btn-primary { background: var(--accent); color: #000; }
-  .btn-primary:hover { background: #00ffc3; transform: translateY(-1px); }
-
-  .btn-secondary { background: transparent; color: var(--accent2); border: 1px solid var(--accent2); }
-  .btn-secondary:hover { background: rgba(123,95,255,0.1); }
-
-  .btn-danger { background: var(--accent3); color: #fff; }
-  .btn-danger:hover { background: #ff3d6e; }
-
-  .btn-ghost { background: var(--border); color: var(--text); }
-  .btn-ghost:hover { background: #3a3f52; }
-
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-
-  /* ─── Checkboxes & Radios ─── */
-  .check-group, .radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .check-item, .radio-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-
-  input[type="checkbox"], input[type="radio"] {
-    width: 17px;
-    height: 17px;
-    accent-color: var(--accent);
-    cursor: pointer;
-    margin: 0;
-  }
-
-  /* ─── Table ─── */
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-    font-family: var(--mono);
-    table-layout: fixed;
-  }
-
-  .data-table th {
-    background: rgba(0,229,160,0.08);
-    color: var(--accent);
-    font-size: 11px;
-    padding: 10px 8px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-    letter-spacing: 0.4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .data-table td {
-    padding: 10px 8px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Column widths for the static data table */
-  #main-table th:nth-child(1), #main-table td:nth-child(1) { width: 5%; }
-  #main-table th:nth-child(2), #main-table td:nth-child(2) { width: 14%; }
-  #main-table th:nth-child(3), #main-table td:nth-child(3) { width: 16%; }
-  #main-table th:nth-child(4), #main-table td:nth-child(4) { width: 10%; }
-  #main-table th:nth-child(5), #main-table td:nth-child(5) { width: 11%; }
-  #main-table th:nth-child(6), #main-table td:nth-child(6) { width: 7%; }
-  #main-table th:nth-child(7), #main-table td:nth-child(7) { width: 37%; }
-
-  .data-table tr:hover td { background: rgba(255,255,255,0.025); }
-
-  /* ─── Alerts ─── */
-  .alert {
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: var(--mono);
-    margin-bottom: 12px;
-    border-left: 3px solid;
-  }
-
-  .alert-success { background: rgba(0,229,160,0.1); border-color: var(--accent); color: var(--accent); }
-  .alert-error { background: rgba(255,95,135,0.1); border-color: var(--accent3); color: var(--accent3); }
-  .alert-warning { background: rgba(255,180,0,0.1); border-color: #ffb400; color: #ffb400; }
-  .alert-info { background: rgba(123,95,255,0.1); border-color: var(--accent2); color: var(--accent2); }
-
-  /* ─── Output Box ─── */
-  .output-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--accent);
-    min-height: 50px;
-    margin-top: 12px;
-    white-space: pre-wrap;
-  }
-
-  /* ─── Slider ─── */
-  input[type="range"] {
-    width: 100%;
-    accent-color: var(--accent);
-    margin-bottom: 8px;
-    padding: 0;
-    background: none;
-    border: none;
-    box-shadow: none;
-  }
-
-  /* ─── Modal ─── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 32px;
-    max-width: 480px;
-    width: 90%;
-    animation: fadeIn 0.2s ease;
-  }
-
-  .modal-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-  .modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
-
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
-  /* ─── Tabs ─── */
-  .tab-list {
-    display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-
-  .tab-btn {
-    padding: 10px 18px;
-    font-size: 12px;
-    font-family: var(--mono);
-    font-weight: 700;
-    color: var(--muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.15s;
-  }
-
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* ─── Tooltip ─── */
-  .tooltip-wrap { position: relative; display: inline-block; }
-
-  .tooltip-wrap .tooltip-text {
-    visibility: hidden;
-    background: var(--accent2);
-    color: #fff;
-    font-family: var(--mono);
-    font-size: 11px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 99;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .tooltip-wrap:hover .tooltip-text { visibility: visible; opacity: 1; }
-
-  /* ─── Drag & Drop ─── */
-  .drag-zone {
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    color: var(--muted);
-    font-family: var(--mono);
-    font-size: 12px;
-    transition: all 0.2s;
-    margin-bottom: 16px;
-  }
-
-  .drag-zone.dragover { border-color: var(--accent); background: rgba(0,229,160,0.05); color: var(--accent); }
-
-  .drag-list { display: flex; flex-direction: column; gap: 8px; }
-
-  .drag-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-family: var(--mono);
-    font-size: 13px;
-    cursor: grab;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.15s;
-  }
-
-  .drag-item:hover { border-color: var(--accent2); }
-  .drag-item.dragging { opacity: 0.4; }
-  .drag-item .drag-handle { color: var(--muted); }
-
-  /* ─── Accordion ─── */
-  .accordion { margin-bottom: 8px; }
-  .accordion-header {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 600;
-    transition: border-color 0.15s;
-  }
-  .accordion-header:hover { border-color: var(--accent2); }
-  .accordion.open .accordion-header { border-color: var(--accent); border-radius: 8px 8px 0 0; color: var(--accent); }
-  .accordion-arrow { transition: transform 0.2s; font-size: 12px; }
-  .accordion.open .accordion-arrow { transform: rotate(180deg); }
-  .accordion-body {
-    display: none;
-    background: var(--bg);
-    border: 1px solid var(--accent);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    padding: 16px;
-    font-size: 13px;
-    color: var(--muted);
-    font-family: var(--mono);
-    line-height: 1.6;
-  }
-  .accordion.open .accordion-body { display: block; }
-
-  /* ─── Progress bar ─── */
-  .progress-bar-wrap {
-    background: var(--bg);
-    border-radius: 99px;
-    height: 10px;
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    transition: width 0.5s ease;
-  }
-
-  /* ─── Badge ─── */
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-family: var(--mono);
-    font-weight: 700;
-    margin-right: 6px;
-  }
-
-  .badge-green { background: rgba(0,229,160,0.15); color: var(--accent); }
-  .badge-purple { background: rgba(123,95,255,0.15); color: var(--accent2); }
-  .badge-red { background: rgba(255,95,135,0.15); color: var(--accent3); }
-  .badge-yellow { background: rgba(255,180,0,0.15); color: #ffb400; }
-
-  /* ─── Breadcrumb ─── */
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-
-  .breadcrumb a { color: var(--accent2); text-decoration: none; cursor: pointer; }
-  .breadcrumb a:hover { text-decoration: underline; }
-  .breadcrumb span { color: var(--border); }
-
-  /* ─── Homepage cards ─── */
-  .home-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
-
-  .home-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-
-  .home-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,229,160,0.1);
-  }
-
-  .home-card .icon { font-size: 28px; margin-bottom: 10px; }
-  .home-card .name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-  .home-card .desc { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-
-  /* ─── Login ─── */
-  .login-box {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  /* ─── Iframe ─── */
-  .iframe-wrap {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-
-  .iframe-header {
-    background: var(--bg);
-    padding: 10px 14px;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-  }
-
-  iframe {
-    width: 100%;
-    height: 220px;
-    border: none;
-    background: white;
-    display: block;
-  }
-
-  /* ─── Scrollbar ─── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-  /* ─── Responsive ─── */
-  @media (max-width: 768px) {
-    #sidebar { display: none; }
-    #main { margin-left: 0; padding: 20px; }
-    .form-row { grid-template-columns: 1fr; }
-  }
-
-  .result-flash {
-    animation: flash 0.5s ease;
-  }
-
-  @keyframes flash {
-    0% { background: rgba(0,229,160,0.2); }
-    100% { background: transparent; }
-  }
+:root {
+  --bg: #0d0f14;
+  --surface: #161920;
+  --card: #1c1f2a;
+  --border: #2a2f3e;
+  --accent: #00e5a0;
+  --accent2: #7b5fff;
+  --accent3: #ff5f87;
+  --text: #e8ecf5;
+  --muted: #6b728a;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; }
+
+/* Sidebar */
+#sidebar { width: 260px; min-height: 100vh; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; left: 0; top: 0; overflow-y: auto; z-index: 100; }
+.logo { padding: 24px 20px 16px; border-bottom: 1px solid var(--border); }
+.logo h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent); }
+.logo p { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 4px; }
+.nav-section { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.nav-label { font-size: 10px; font-family: var(--mono); color: var(--muted); padding: 0 20px 8px; letter-spacing: 1.5px; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); transition: all 0.15s; border-left: 3px solid transparent; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--accent); background: rgba(0, 229, 160, 0.07); border-left-color: var(--accent); }
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+/* Main */
+#main { margin-left: 260px; flex: 1; padding: 40px; min-height: 100vh; }
+.page { display: none; animation: fadeIn 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+.page-header { margin-bottom: 32px; }
+.page-header h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+.page-header p { color: var(--muted); font-size: 13px; margin-top: 6px; font-family: var(--mono); }
+.tag { display: inline-block; background: rgba(0,229,160,0.12); color: var(--accent); font-size: 10px; font-family: var(--mono); padding: 2px 8px; border-radius: 4px; margin-left: 10px; vertical-align: middle; }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--accent2); font-family: var(--mono); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.card-title::before { content: '//'; color: var(--muted); }
+
+/* Form elements */
+label { display: block; font-size: 12px; font-family: var(--mono); color: var(--muted); margin-bottom: 6px; letter-spacing: 0.5px; }
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 13px; padding: 10px 14px; width: 100%; outline: none; transition: border-color 0.2s; margin-bottom: 16px;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,229,160,0.1); }
+textarea { resize: vertical; min-height: 90px; }
+select option { background: var(--card); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; border: none; margin-right: 8px; margin-bottom: 8px; }
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { background: #00ffc3; transform: translateY(-1px); }
+.btn-secondary { background: transparent; color: var(--accent2); border: 1px solid var(--accent2); }
+.btn-secondary:hover { background: rgba(123,95,255,0.1); }
+.btn-danger { background: var(--accent3); color: #fff; }
+.btn-danger:hover { background: #ff3d6e; }
+.btn-ghost { background: var(--border); color: var(--text); }
+.btn-ghost:hover { background: #3a3f52; }
+.btn-sm { padding: 5px 10px; font-size: 11px; margin-right: 4px; margin-bottom: 0; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+/* Checkboxes & Radios */
+.check-group, .radio-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+.check-item, .radio-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; }
+input[type="checkbox"], input[type="radio"] { width: 17px; height: 17px; accent-color: var(--accent); cursor: pointer; margin: 0; }
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); table-layout: fixed; }
+.data-table th { background: rgba(0,229,160,0.08); color: var(--accent); font-size: 11px; padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--border); letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.data-table td { padding: 10px 8px; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.data-table tr:hover td { background: rgba(255,255,255,0.025); }
+
+/* Column widths for static data table */
+#main-table th:nth-child(1), #main-table td:nth-child(1) { width: 5%; }
+#main-table th:nth-child(2), #main-table td:nth-child(2) { width: 14%; }
+#main-table th:nth-child(3), #main-table td:nth-child(3) { width: 16%; }
+#main-table th:nth-child(4), #main-table td:nth-child(4) { width: 10%; }
+#main-table th:nth-child(5), #main-table td:nth-child(5) { width: 11%; }
+#main-table th:nth-child(6), #main-table td:nth-child(6) { width: 7%; }
+#main-table th:nth-child(7), #main-table td:nth-child(7) { width: 37%; }
+
+/* Alerts */
+.alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; font-family: var(--mono); margin-bottom: 12px; border-left: 3px solid; }
+.alert-success { background: rgba(0,229,160,0.1); border-color: var(--accent); color: var(--accent); }
+.alert-error { background: rgba(255,95,135,0.1); border-color: var(--accent3); color: var(--accent3); }
+.alert-warning { background: rgba(255,180,0,0.1); border-color: #ffb400; color: #ffb400; }
+.alert-info { background: rgba(123,95,255,0.1); border-color: var(--accent2); color: var(--accent2); }
+
+/* Output Box */
+.output-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; font-family: var(--mono); font-size: 12px; color: var(--accent); min-height: 50px; margin-top: 12px; white-space: pre-wrap; }
+
+/* Slider */
+input[type="range"] { width: 100%; accent-color: var(--accent); margin-bottom: 8px; padding: 0; background: none; border: none; box-shadow: none; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 32px; max-width: 520px; width: 90%; animation: fadeIn 0.2s ease; }
+.modal-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+.modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* Edit modal form fields */
+.modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-form-row label { margin-top: 0; }
+.modal-form-row input, .modal-form-row select { margin-bottom: 8px; }
+
+/* Tabs */
+.tab-list { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab-btn { padding: 10px 18px; font-size: 12px; font-family: var(--mono); font-weight: 700; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Tooltip */
+.tooltip-wrap { position: relative; display: inline-block; }
+.tooltip-wrap .tooltip-text { visibility: hidden; background: var(--accent2); color: #fff; font-family: var(--mono); font-size: 11px; padding: 6px 10px; border-radius: 6px; position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 99; opacity: 0; transition: opacity 0.15s; }
+.tooltip-wrap:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+/* Drag & Drop */
+.drag-list { display: flex; flex-direction: column; gap: 8px; }
+.drag-item { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; cursor: grab; user-select: none; display: flex; align-items: center; gap: 10px; transition: all 0.15s; }
+.drag-item:hover { border-color: var(--accent2); }
+.drag-item.dragging { opacity: 0.4; }
+.drag-item .drag-handle { color: var(--muted); }
+
+/* Accordion */
+.accordion { margin-bottom: 8px; }
+.accordion-header { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; transition: border-color 0.15s; }
+.accordion-header:hover { border-color: var(--accent2); }
+.accordion.open .accordion-header { border-color: var(--accent); border-radius: 8px 8px 0 0; color: var(--accent); }
+.accordion-arrow { transition: transform 0.2s; font-size: 12px; }
+.accordion.open .accordion-arrow { transform: rotate(180deg); }
+.accordion-body { display: none; background: var(--bg); border: 1px solid var(--accent); border-top: none; border-radius: 0 0 8px 8px; padding: 16px; font-size: 13px; color: var(--muted); font-family: var(--mono); line-height: 1.6; }
+.accordion.open .accordion-body { display: block; }
+
+/* Progress bar */
+.progress-bar-wrap { background: var(--bg); border-radius: 99px; height: 10px; overflow: hidden; margin-bottom: 12px; }
+.progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+
+/* Badge */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-family: var(--mono); font-weight: 700; margin-right: 6px; }
+.badge-green { background: rgba(0,229,160,0.15); color: var(--accent); }
+.badge-purple { background: rgba(123,95,255,0.15); color: var(--accent2); }
+.badge-red { background: rgba(255,95,135,0.15); color: var(--accent3); }
+.badge-yellow { background: rgba(255,180,0,0.15); color: #ffb400; }
+
+/* Breadcrumb */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+.breadcrumb a { color: var(--accent2); text-decoration: none; cursor: pointer; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { color: var(--border); }
+
+/* Homepage cards */
+.home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.home-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; text-align: center; }
+.home-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,229,160,0.1); }
+.home-card .icon { font-size: 28px; margin-bottom: 10px; }
+.home-card .name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.home-card .desc { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+/* Login */
+.login-box { max-width: 400px; margin: 0 auto; }
+
+/* iFrame */
+.iframe-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+.iframe-header { background: var(--bg); padding: 10px 14px; font-family: var(--mono); font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--border); }
+iframe { width: 100%; height: 220px; border: none; background: white; display: block; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Responsive */
+@media (max-width: 768px) { #sidebar { display: none; } #main { margin-left: 0; padding: 20px; } .form-row { grid-template-columns: 1fr; } }
+
+/* Add Row Form */
+.add-row-form { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+.add-row-form h4 { font-family: var(--mono); font-size: 12px; color: var(--accent2); margin-bottom: 16px; }
+.add-row-form .form-row { grid-template-columns: 1fr 1fr 1fr; }
 </style>
 </head>
 <body>
 
-<!-- ─── Sidebar ─── -->
+<!-- Sidebar -->
 <nav id="sidebar">
   <div class="logo">
     <h1>⚡ DemoApps</h1>
     <p>// selenium practice</p>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Overview</div>
-    <div class="nav-item active" onclick="showPage('home')">
-      <span class="nav-icon">🏠</span> Home
-    </div>
+    <div class="nav-item active" onclick="showPage('home')"><span class="nav-icon">🏠</span> Home</div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">UI Elements</div>
     <div class="nav-item" onclick="showPage('textbox')"><span class="nav-icon">✏️</span> Text Box</div>
@@ -643,1106 +217,955 @@
     <div class="nav-item" onclick="showPage('table')"><span class="nav-icon">📊</span> Table</div>
     <div class="nav-item" onclick="showPage('links')"><span class="nav-icon">🔗</span> Links</div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Advanced</div>
     <div class="nav-item" onclick="showPage('alerts')"><span class="nav-icon">⚠️</span> Alerts / Popups</div>
     <div class="nav-item" onclick="showPage('modal')"><span class="nav-icon">🪟</span> Modal Dialog</div>
     <div class="nav-item" onclick="showPage('tabs')"><span class="nav-icon">📑</span> Tabs</div>
     <div class="nav-item" onclick="showPage('accordion')"><span class="nav-icon">🪗</span> Accordion</div>
-    <div class="nav-item" onclick="showPage('dragdrop')"><span class="nav-icon">🖱️</span> Drag & Drop</div>
+    <div class="nav-item" onclick="showPage('dragdrop')"><span class="nav-icon">🖱️</span> Drag &amp; Drop</div>
     <div class="nav-item" onclick="showPage('frames')"><span class="nav-icon">🖼️</span> iFrame</div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Forms</div>
     <div class="nav-item" onclick="showPage('login')"><span class="nav-icon">🔐</span> Login Form</div>
     <div class="nav-item" onclick="showPage('register')"><span class="nav-icon">📝</span> Registration</div>
     <div class="nav-item" onclick="showPage('validation')"><span class="nav-icon">✅</span> Form Validation</div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Extras</div>
     <div class="nav-item" onclick="showPage('dynamic')"><span class="nav-icon">⏱️</span> Dynamic Elements</div>
-    <div class="nav-item" onclick="showPage('scroll')"><span class="nav-icon">📜</span> Scroll & Waits</div>
+    <div class="nav-item" onclick="showPage('scroll')"><span class="nav-icon">📜</span> Scroll &amp; Waits</div>
   </div>
 </nav>
 
-<!-- ─── Main Content ─── -->
+<!-- Main Content -->
 <main id="main">
 
-  <!-- HOME -->
-  <div class="page active" id="page-home">
-    <div class="page-header">
-      <h2>⚡ Selenium Practice DemoApps</h2>
-      <p>// a playground for automation testers — practice all UI interactions</p>
-    </div>
-    <div class="home-grid" id="home-grid">
-      <div class="home-card" onclick="showPage('textbox')"><div class="icon">✏️</div><div class="name">Text Box</div><div class="desc">input, textarea</div></div>
-      <div class="home-card" onclick="showPage('button')"><div class="icon">🔘</div><div class="name">Buttons</div><div class="desc">click, disable, toggle</div></div>
-      <div class="home-card" onclick="showPage('checkbox')"><div class="icon">☑️</div><div class="name">Check Box</div><div class="desc">single & multiple</div></div>
-      <div class="home-card" onclick="showPage('radio')"><div class="icon">🔵</div><div class="name">Radio Button</div><div class="desc">single select</div></div>
-      <div class="home-card" onclick="showPage('dropdown')"><div class="icon">🔽</div><div class="name">Dropdown</div><div class="desc">select, multi-select</div></div>
-      <div class="home-card" onclick="showPage('table')"><div class="icon">📊</div><div class="name">Table</div><div class="desc">dynamic data table</div></div>
-      <div class="home-card" onclick="showPage('links')"><div class="icon">🔗</div><div class="name">Links</div><div class="desc">anchor interactions</div></div>
-      <div class="home-card" onclick="showPage('alerts')"><div class="icon">⚠️</div><div class="name">Alerts</div><div class="desc">alert, confirm, prompt</div></div>
-      <div class="home-card" onclick="showPage('modal')"><div class="icon">🪟</div><div class="name">Modal</div><div class="desc">dialog boxes</div></div>
-      <div class="home-card" onclick="showPage('tabs')"><div class="icon">📑</div><div class="name">Tabs</div><div class="desc">tab switching</div></div>
-      <div class="home-card" onclick="showPage('accordion')"><div class="icon">🪗</div><div class="name">Accordion</div><div class="desc">expand/collapse</div></div>
-      <div class="home-card" onclick="showPage('dragdrop')"><div class="icon">🖱️</div><div class="name">Drag & Drop</div><div class="desc">sortable list</div></div>
-      <div class="home-card" onclick="showPage('frames')"><div class="icon">🖼️</div><div class="name">iFrame</div><div class="desc">nested frames</div></div>
-      <div class="home-card" onclick="showPage('login')"><div class="icon">🔐</div><div class="name">Login</div><div class="desc">authentication form</div></div>
-      <div class="home-card" onclick="showPage('register')"><div class="icon">📝</div><div class="name">Registration</div><div class="desc">full register form</div></div>
-      <div class="home-card" onclick="showPage('validation')"><div class="icon">✅</div><div class="name">Validation</div><div class="desc">form validation</div></div>
-      <div class="home-card" onclick="showPage('dynamic')"><div class="icon">⏱️</div><div class="name">Dynamic</div><div class="desc">waits & timers</div></div>
-      <div class="home-card" onclick="showPage('scroll')"><div class="icon">📜</div><div class="name">Scroll</div><div class="desc">scroll behavior</div></div>
-    </div>
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="page-header">
+    <h2>⚡ Selenium Practice DemoApps</h2>
+    <p>// a playground for automation testers — practice all UI interactions</p>
   </div>
-
-  <!-- TEXT BOX -->
-  <div class="page" id="page-textbox">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Text Box</div>
-    <div class="page-header"><h2>Text Box <span class="tag">TEXTBOX</span></h2><p>// practice input and textarea interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Single Line Inputs</div>
-      <label>id: txt-name</label>
-      <input type="text" id="txt-name" placeholder="Enter your full name" />
-      <label>id: txt-email</label>
-      <input type="email" id="txt-email" placeholder="Enter your email" />
-      <label>id: txt-phone</label>
-      <input type="text" id="txt-phone" placeholder="Enter phone number (digits only)" pattern="[0-9]+" />
-      <label>id: txt-password (type="password")</label>
-      <input type="password" id="txt-password" placeholder="Enter password" />
-      <label>id: txt-number</label>
-      <input type="number" id="txt-number" placeholder="Enter a number" min="0" max="999" />
-      <button class="btn btn-primary" id="btn-get-values" onclick="getTextboxValues()">Get All Values</button>
-      <button class="btn btn-ghost" onclick="clearTextboxes()">Clear All</button>
-      <div class="output-box" id="textbox-output">// output will appear here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Textarea</div>
-      <label>id: txt-area</label>
-      <textarea id="txt-area" placeholder="Type a multi-line message here..."></textarea>
-      <button class="btn btn-primary" onclick="showTextareaContent()">Show Content</button>
-      <div class="output-box" id="textarea-output">// output will appear here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Read-Only & Disabled</div>
-      <label>id: txt-readonly (readonly)</label>
-      <input type="text" id="txt-readonly" value="This field is read-only" readonly />
-      <label>id: txt-disabled (disabled)</label>
-      <input type="text" id="txt-disabled" value="This field is disabled" disabled />
-    </div>
-
-    <div class="card">
-      <div class="card-title">Range / Slider</div>
-      <label>id: range-slider — value: <span id="range-display">50</span></label>
-      <input type="range" id="range-slider" min="0" max="100" value="50" oninput="document.getElementById('range-display').textContent=this.value" />
-    </div>
+  <div class="home-grid">
+    <div class="home-card" onclick="showPage('textbox')"><div class="icon">✏️</div><div class="name">Text Box</div><div class="desc">input, textarea</div></div>
+    <div class="home-card" onclick="showPage('button')"><div class="icon">🔘</div><div class="name">Buttons</div><div class="desc">click, disable, toggle</div></div>
+    <div class="home-card" onclick="showPage('checkbox')"><div class="icon">☑️</div><div class="name">Check Box</div><div class="desc">single &amp; multiple</div></div>
+    <div class="home-card" onclick="showPage('radio')"><div class="icon">🔵</div><div class="name">Radio Button</div><div class="desc">single select</div></div>
+    <div class="home-card" onclick="showPage('dropdown')"><div class="icon">🔽</div><div class="name">Dropdown</div><div class="desc">select, multi-select</div></div>
+    <div class="home-card" onclick="showPage('table')"><div class="icon">📊</div><div class="name">Table</div><div class="desc">dynamic data table</div></div>
+    <div class="home-card" onclick="showPage('links')"><div class="icon">🔗</div><div class="name">Links</div><div class="desc">anchor interactions</div></div>
+    <div class="home-card" onclick="showPage('alerts')"><div class="icon">⚠️</div><div class="name">Alerts</div><div class="desc">alert, confirm, prompt</div></div>
+    <div class="home-card" onclick="showPage('modal')"><div class="icon">🪟</div><div class="name">Modal</div><div class="desc">dialog boxes</div></div>
+    <div class="home-card" onclick="showPage('tabs')"><div class="icon">📑</div><div class="name">Tabs</div><div class="desc">tab switching</div></div>
+    <div class="home-card" onclick="showPage('accordion')"><div class="icon">🪗</div><div class="name">Accordion</div><div class="desc">expand/collapse</div></div>
+    <div class="home-card" onclick="showPage('dragdrop')"><div class="icon">🖱️</div><div class="name">Drag &amp; Drop</div><div class="desc">sortable list</div></div>
+    <div class="home-card" onclick="showPage('frames')"><div class="icon">🖼️</div><div class="name">iFrame</div><div class="desc">nested frames</div></div>
+    <div class="home-card" onclick="showPage('login')"><div class="icon">🔐</div><div class="name">Login</div><div class="desc">authentication form</div></div>
+    <div class="home-card" onclick="showPage('register')"><div class="icon">📝</div><div class="name">Registration</div><div class="desc">full register form</div></div>
+    <div class="home-card" onclick="showPage('validation')"><div class="icon">✅</div><div class="name">Validation</div><div class="desc">form validation</div></div>
+    <div class="home-card" onclick="showPage('dynamic')"><div class="icon">⏱️</div><div class="name">Dynamic</div><div class="desc">waits &amp; timers</div></div>
+    <div class="home-card" onclick="showPage('scroll')"><div class="icon">📜</div><div class="name">Scroll</div><div class="desc">scroll behavior</div></div>
   </div>
+</div>
 
-  <!-- BUTTONS -->
-  <div class="page" id="page-button">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Buttons</div>
-    <div class="page-header"><h2>Buttons <span class="tag">BUTTONS</span></h2><p>// practice button clicks and states</p></div>
-
-    <div class="card">
-      <div class="card-title">Button Types</div>
-      <button class="btn btn-primary" id="btn-primary" onclick="btnClicked('btn-primary')">Primary Button</button>
-      <button class="btn btn-secondary" id="btn-secondary" onclick="btnClicked('btn-secondary')">Secondary Button</button>
-      <button class="btn btn-danger" id="btn-danger" onclick="btnClicked('btn-danger')">Danger Button</button>
-      <button class="btn btn-ghost" id="btn-ghost" onclick="btnClicked('btn-ghost')">Ghost Button</button>
-      <div class="output-box" id="btn-output">// click any button</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Toggle & Disable</div>
-      <button class="btn btn-primary" id="btn-toggle" onclick="toggleBtn()">Toggle Me (ON)</button>
-      <button class="btn btn-secondary" id="btn-enable-disable" onclick="toggleDisable()">Click to Disable Below</button>
-      <br><br>
-      <button class="btn btn-danger" id="btn-disabled-target">I Get Disabled</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Click Counter</div>
-      <button class="btn btn-primary" id="btn-counter" onclick="incrementCounter()">Click Me!</button>
-      <div class="output-box" id="counter-output">Count: 0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Double Click & Right Click</div>
-      <button class="btn btn-secondary" id="btn-dblclick" ondblclick="btnClicked('dblclick')">Double Click Me</button>
-      <button class="btn btn-ghost" id="btn-rightclick" oncontextmenu="rightClick(event)">Right Click Me</button>
-      <div class="output-box" id="click-output">// try double click or right click</div>
-    </div>
+<!-- TEXT BOX -->
+<div class="page" id="page-textbox">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Text Box</div>
+  <div class="page-header"><h2>Text Box <span class="tag">TEXTBOX</span></h2><p>// practice input and textarea interactions</p></div>
+  <div class="card">
+    <div class="card-title">Single Line Inputs</div>
+    <label>id: txt-name</label><input type="text" id="txt-name" placeholder="Enter your full name" />
+    <label>id: txt-email</label><input type="email" id="txt-email" placeholder="Enter your email" />
+    <label>id: txt-phone</label><input type="text" id="txt-phone" placeholder="Enter phone number" />
+    <label>id: txt-password (type="password")</label><input type="password" id="txt-password" placeholder="Enter password" />
+    <label>id: txt-number</label><input type="number" id="txt-number" placeholder="Enter a number" />
+    <button class="btn btn-primary" onclick="getTextboxValues()">Get All Values</button>
+    <button class="btn btn-ghost" onclick="clearTextboxes()">Clear All</button>
+    <div class="output-box" id="textbox-output">// output will appear here</div>
   </div>
-
-  <!-- CHECKBOX -->
-  <div class="page" id="page-checkbox">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Check Box</div>
-    <div class="page-header"><h2>Check Box <span class="tag">CHECKBOX</span></h2><p>// practice checking / unchecking elements</p></div>
-
-    <div class="card">
-      <div class="card-title">Individual Checkboxes</div>
-      <div class="check-group">
-        <label class="check-item"><input type="checkbox" id="chk-java" name="skills" value="Java"> Java</label>
-        <label class="check-item"><input type="checkbox" id="chk-python" name="skills" value="Python"> Python</label>
-        <label class="check-item"><input type="checkbox" id="chk-selenium" name="skills" value="Selenium" checked> Selenium</label>
-        <label class="check-item"><input type="checkbox" id="chk-cypress" name="skills" value="Cypress"> Cypress</label>
-        <label class="check-item"><input type="checkbox" id="chk-playwright" name="skills" value="Playwright"> Playwright</label>
-      </div>
-      <button class="btn btn-primary" onclick="getChecked()">Get Selected</button>
-      <button class="btn btn-ghost" onclick="checkAll()">Check All</button>
-      <button class="btn btn-secondary" onclick="uncheckAll()">Uncheck All</button>
-      <div class="output-box" id="chk-output">// selected values appear here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Select All Checkbox</div>
-      <label class="check-item" style="margin-bottom:12px;font-weight:700;">
-        <input type="checkbox" id="chk-all-master" onchange="masterCheck(this)"> Select All
-      </label>
-      <div class="check-group">
-        <label class="check-item"><input type="checkbox" class="chk-sub" value="Automation"> Automation Testing</label>
-        <label class="check-item"><input type="checkbox" class="chk-sub" value="Manual"> Manual Testing</label>
-        <label class="check-item"><input type="checkbox" class="chk-sub" value="API"> API Testing</label>
-        <label class="check-item"><input type="checkbox" class="chk-sub" value="Performance"> Performance Testing</label>
-      </div>
-    </div>
+  <div class="card">
+    <div class="card-title">Textarea</div>
+    <label>id: txt-area</label><textarea id="txt-area" placeholder="Type a multi-line message here..."></textarea>
+    <button class="btn btn-primary" onclick="showTextareaContent()">Show Content</button>
+    <div class="output-box" id="textarea-output">// output will appear here</div>
   </div>
-
-  <!-- RADIO -->
-  <div class="page" id="page-radio">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Radio Button</div>
-    <div class="page-header"><h2>Radio Button <span class="tag">RADIO</span></h2><p>// practice single selection</p></div>
-
-    <div class="card">
-      <div class="card-title">Gender</div>
-      <div class="radio-group">
-        <label class="radio-item"><input type="radio" name="gender" id="radio-male" value="Male"> Male</label>
-        <label class="radio-item"><input type="radio" name="gender" id="radio-female" value="Female"> Female</label>
-        <label class="radio-item"><input type="radio" name="gender" id="radio-other" value="Other"> Other</label>
-      </div>
-      <button class="btn btn-primary" onclick="getRadio('gender', 'radio-output')">Get Selected</button>
-      <div class="output-box" id="radio-output">// selected value appears here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Experience Level</div>
-      <div class="radio-group">
-        <label class="radio-item"><input type="radio" name="exp" id="radio-fresher" value="Fresher"> Fresher</label>
-        <label class="radio-item"><input type="radio" name="exp" id="radio-junior" value="1-2 Years"> 1–2 Years</label>
-        <label class="radio-item"><input type="radio" name="exp" id="radio-mid" value="3-5 Years"> 3–5 Years</label>
-        <label class="radio-item"><input type="radio" name="exp" id="radio-senior" value="5+ Years"> 5+ Years</label>
-      </div>
-      <button class="btn btn-primary" onclick="getRadio('exp', 'radio-exp-output')">Get Selected</button>
-      <div class="output-box" id="radio-exp-output">// selected value appears here</div>
-    </div>
+  <div class="card">
+    <div class="card-title">Read-Only &amp; Disabled</div>
+    <label>id: txt-readonly (readonly)</label><input type="text" id="txt-readonly" value="This field is read-only" readonly />
+    <label>id: txt-disabled (disabled)</label><input type="text" id="txt-disabled" value="This field is disabled" disabled />
   </div>
-
-  <!-- DROPDOWN -->
-  <div class="page" id="page-dropdown">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Dropdown</div>
-    <div class="page-header"><h2>Dropdown <span class="tag">SELECT</span></h2><p>// practice select element interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Single Select Dropdown</div>
-      <label>id: dd-country</label>
-      <select id="dd-country" onchange="dropdownChanged('dd-country', 'dd-output')">
-        <option value="">-- Select Country --</option>
-        <option value="India">India</option>
-        <option value="USA">United States</option>
-        <option value="UK">United Kingdom</option>
-        <option value="Canada">Canada</option>
-        <option value="Australia">Australia</option>
-        <option value="Germany">Germany</option>
-        <option value="Japan">Japan</option>
-      </select>
-      <label>id: dd-lang</label>
-      <select id="dd-lang">
-        <option value="">-- Select Language --</option>
-        <option value="Java">Java</option>
-        <option value="Python">Python</option>
-        <option value="JavaScript">JavaScript</option>
-        <option value="C#">C#</option>
-        <option value="Ruby">Ruby</option>
-      </select>
-      <button class="btn btn-primary" onclick="getDropdowns()">Get Values</button>
-      <div class="output-box" id="dd-output">// selected values appear here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Multi Select</div>
-      <label>id: dd-multi (hold Ctrl/Cmd to select multiple)</label>
-      <select id="dd-multi" multiple size="5" style="height:auto;">
-        <option value="Selenium">Selenium</option>
-        <option value="Cypress">Cypress</option>
-        <option value="Playwright">Playwright</option>
-        <option value="Appium">Appium</option>
-        <option value="RestAssured">RestAssured</option>
-        <option value="TestNG">TestNG</option>
-        <option value="JUnit">JUnit</option>
-      </select>
-      <button class="btn btn-primary" onclick="getMultiSelect()">Get Selected</button>
-      <div class="output-box" id="dd-multi-output">// selected values appear here</div>
-    </div>
+  <div class="card">
+    <div class="card-title">Range / Slider</div>
+    <label>id: range-slider — value: <span id="range-display">50</span></label>
+    <input type="range" id="range-slider" min="0" max="100" value="50" oninput="document.getElementById('range-display').textContent=this.value" />
   </div>
+</div>
 
-  <!-- TABLE -->
-  <div class="page" id="page-table">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Table</div>
-    <div class="page-header"><h2>Table <span class="tag">TABLE</span></h2><p>// practice reading table data</p></div>
-
-    <div class="card">
-      <div class="card-title">Static Data Table</div>
-      <div style="overflow-x:auto;">
-        <table class="data-table" id="main-table">
-          <thead>
-            <tr>
-              <th>ID</th><th>Name</th><th>Course</th><th>Batch</th><th>Status</th><th>Score</th><th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="table-body"></tbody>
-        </table>
-      </div>
-      <div class="output-box" id="table-output" style="margin-top:16px;">// table interactions appear here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Pagination Table</div>
-      <div style="overflow-x:auto;">
-        <table class="data-table" id="page-table">
-          <thead><tr><th>#</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead>
-          <tbody id="paginated-body"></tbody>
-        </table>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px;align-items:center;">
-        <button class="btn btn-ghost" id="btn-prev" onclick="prevPage()">← Prev</button>
-        <span id="page-info" style="font-family:var(--mono);font-size:12px;color:var(--muted);">Page 1 of 3</span>
-        <button class="btn btn-ghost" id="btn-next" onclick="nextPage()">Next →</button>
-      </div>
-    </div>
+<!-- BUTTONS -->
+<div class="page" id="page-button">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Buttons</div>
+  <div class="page-header"><h2>Buttons <span class="tag">BUTTONS</span></h2><p>// practice button clicks and states</p></div>
+  <div class="card">
+    <div class="card-title">Button Types</div>
+    <button class="btn btn-primary" id="btn-primary" onclick="btnClicked('btn-primary')">Primary Button</button>
+    <button class="btn btn-secondary" id="btn-secondary" onclick="btnClicked('btn-secondary')">Secondary Button</button>
+    <button class="btn btn-danger" id="btn-danger" onclick="btnClicked('btn-danger')">Danger Button</button>
+    <button class="btn btn-ghost" id="btn-ghost" onclick="btnClicked('btn-ghost')">Ghost Button</button>
+    <div class="output-box" id="btn-output">// click any button</div>
   </div>
-
-  <!-- LINKS -->
-  <div class="page" id="page-links">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Links</div>
-    <div class="page-header"><h2>Links <span class="tag">ANCHOR</span></h2><p>// practice link interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Navigation Links</div>
-      <p style="margin-bottom:16px;font-size:13px;color:var(--muted);font-family:var(--mono);">Click to navigate within the app:</p>
-      <a id="link-textbox" onclick="showPage('textbox')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Text Box</a>
-      <a id="link-button" onclick="showPage('button')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Buttons</a>
-      <a id="link-table" onclick="showPage('table')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Table</a>
-    </div>
-
-    <div class="card">
-      <div class="card-title">External Links</div>
-      <a id="link-google" href="https://www.google.com" target="_blank" style="display:block;color:var(--accent2);font-family:var(--mono);font-size:13px;margin-bottom:10px;">↗ Google (opens in new tab)</a>
-      <a id="link-github" href="https://www.github.com" target="_blank" style="display:block;color:var(--accent2);font-family:var(--mono);font-size:13px;margin-bottom:10px;">↗ GitHub (opens in new tab)</a>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Tooltip Buttons</div>
-      <p style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:16px;">Hover over buttons to see tooltips:</p>
-      <div class="tooltip-wrap">
-        <button class="btn btn-primary" id="btn-tooltip1">Hover Me 1</button>
-        <span class="tooltip-text">This is a tooltip!</span>
-      </div>
-      <div class="tooltip-wrap">
-        <button class="btn btn-secondary" id="btn-tooltip2">Hover Me 2</button>
-        <span class="tooltip-text">Another tooltip here</span>
-      </div>
-    </div>
+  <div class="card">
+    <div class="card-title">Toggle &amp; Disable</div>
+    <button class="btn btn-primary" id="btn-toggle" onclick="toggleBtn()">Toggle Me (ON)</button>
+    <button class="btn btn-secondary" id="btn-enable-disable" onclick="toggleDisable()">Click to Disable Below</button><br><br>
+    <button class="btn btn-danger" id="btn-disabled-target">I Get Disabled</button>
   </div>
-
-  <!-- ALERTS -->
-  <div class="page" id="page-alerts">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Alerts</div>
-    <div class="page-header"><h2>Alerts / Popups <span class="tag">ALERT</span></h2><p>// practice browser & custom alerts</p></div>
-
-    <div class="card">
-      <div class="card-title">Browser Alerts</div>
-      <button class="btn btn-primary" id="btn-alert" onclick="triggerAlert()">Simple Alert</button>
-      <button class="btn btn-secondary" id="btn-confirm" onclick="triggerConfirm()">Confirm Dialog</button>
-      <button class="btn btn-ghost" id="btn-prompt" onclick="triggerPrompt()">Prompt Dialog</button>
-      <div class="output-box" id="alert-output">// dialog result appears here</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Custom Notification Alerts</div>
-      <button class="btn btn-primary" onclick="showAlert('success', 'Operation completed successfully!')">✅ Success</button>
-      <button class="btn btn-danger" onclick="showAlert('error', 'Something went wrong!')">❌ Error</button>
-      <button class="btn btn-ghost" onclick="showAlert('warning', 'This action cannot be undone.')">⚠️ Warning</button>
-      <button class="btn btn-secondary" onclick="showAlert('info', 'Your session will expire in 5 minutes.')">ℹ️ Info</button>
-      <div id="custom-alerts" style="margin-top:16px;"></div>
-    </div>
+  <div class="card">
+    <div class="card-title">Click Counter</div>
+    <button class="btn btn-primary" id="btn-counter" onclick="incrementCounter()">Click Me!</button>
+    <div class="output-box" id="counter-output">Count: 0</div>
   </div>
-
-  <!-- MODAL -->
-  <div class="page" id="page-modal">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Modal</div>
-    <div class="page-header"><h2>Modal Dialog <span class="tag">MODAL</span></h2><p>// practice modal / dialog interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Basic Modal</div>
-      <button class="btn btn-primary" id="btn-open-modal" onclick="openModal('modal1')">Open Modal</button>
-      <button class="btn btn-secondary" id="btn-open-modal2" onclick="openModal('modal2')">Open Confirm Modal</button>
-      <div class="output-box" id="modal-output">// modal result appears here</div>
-    </div>
+  <div class="card">
+    <div class="card-title">Double Click &amp; Right Click</div>
+    <button class="btn btn-secondary" id="btn-dblclick" ondblclick="btnClicked('dblclick')">Double Click Me</button>
+    <button class="btn btn-ghost" id="btn-rightclick" oncontextmenu="rightClick(event)">Right Click Me</button>
+    <div class="output-box" id="click-output">// try double click or right click</div>
   </div>
+</div>
 
-  <!-- TABS -->
-  <div class="page" id="page-tabs">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Tabs</div>
-    <div class="page-header"><h2>Tabs <span class="tag">TABS</span></h2><p>// practice tab switching</p></div>
-
-    <div class="card">
-      <div class="card-title">Tabbed Content</div>
-      <div class="tab-list">
-        <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">Overview</button>
-        <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Details</button>
-        <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">Settings</button>
-        <button class="tab-btn" id="tab-btn-4" onclick="switchTab(4)">Logs</button>
-      </div>
-      <div class="tab-panel active" id="tab-panel-1">
-        <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;">
-          📋 <strong>Tab 1: Overview</strong><br><br>
-          This is the overview tab content. Use Selenium to verify that clicking each tab shows the correct content panel.<br><br>
-          <span class="badge badge-green">active</span> This tab is currently active.
-        </p>
-      </div>
-      <div class="tab-panel" id="tab-panel-2">
-        <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;">
-          🔍 <strong>Tab 2: Details</strong><br><br>
-          This panel contains detailed information. Verify that switching to this tab hides the other panels.
-        </p>
-      </div>
-      <div class="tab-panel" id="tab-panel-3">
-        <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;">
-          ⚙️ <strong>Tab 3: Settings</strong><br><br>
-          Settings content goes here. Practice finding elements inside specific tab panels.
-        </p>
-      </div>
-      <div class="tab-panel" id="tab-panel-4">
-        <p style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:1.8;">
-          📜 <strong>Tab 4: Logs</strong><br><br>
-          [2024-01-01 10:00:00] App started<br>
-          [2024-01-01 10:01:12] User logged in<br>
-          [2024-01-01 10:05:33] Test executed<br>
-          [2024-01-01 10:06:01] Test passed ✓
-        </p>
-      </div>
+<!-- CHECKBOX -->
+<div class="page" id="page-checkbox">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Check Box</div>
+  <div class="page-header"><h2>Check Box <span class="tag">CHECKBOX</span></h2><p>// practice checking / unchecking elements</p></div>
+  <div class="card">
+    <div class="card-title">Individual Checkboxes</div>
+    <div class="check-group">
+      <label class="check-item"><input type="checkbox" id="chk-java" name="skills" value="Java"> Java</label>
+      <label class="check-item"><input type="checkbox" id="chk-python" name="skills" value="Python"> Python</label>
+      <label class="check-item"><input type="checkbox" id="chk-selenium" name="skills" value="Selenium" checked> Selenium</label>
+      <label class="check-item"><input type="checkbox" id="chk-cypress" name="skills" value="Cypress"> Cypress</label>
+      <label class="check-item"><input type="checkbox" id="chk-playwright" name="skills" value="Playwright"> Playwright</label>
     </div>
+    <button class="btn btn-primary" onclick="getChecked()">Get Selected</button>
+    <button class="btn btn-ghost" onclick="checkAll()">Check All</button>
+    <button class="btn btn-secondary" onclick="uncheckAll()">Uncheck All</button>
+    <div class="output-box" id="chk-output">// selected values appear here</div>
   </div>
-
-  <!-- ACCORDION -->
-  <div class="page" id="page-accordion">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Accordion</div>
-    <div class="page-header"><h2>Accordion <span class="tag">ACCORDION</span></h2><p>// practice expand/collapse</p></div>
-
-    <div class="card">
-      <div class="card-title">FAQ Accordion</div>
-      <div class="accordion" id="acc-1">
-        <div class="accordion-header" onclick="toggleAccordion('acc-1')">
-          What is Selenium? <span class="accordion-arrow">▼</span>
-        </div>
-        <div class="accordion-body">
-          Selenium is an open-source framework for automating web browsers. It supports multiple programming languages including Java, Python, C#, and more. It's widely used for web application testing.
-        </div>
-      </div>
-      <div class="accordion" id="acc-2">
-        <div class="accordion-header" onclick="toggleAccordion('acc-2')">
-          What is WebDriver? <span class="accordion-arrow">▼</span>
-        </div>
-        <div class="accordion-body">
-          WebDriver is a remote control interface that enables introspection and control of user agents. It provides a platform and language-neutral wire protocol as a way for out-of-process programs to remotely instruct the behavior of web browsers.
-        </div>
-      </div>
-      <div class="accordion" id="acc-3">
-        <div class="accordion-header" onclick="toggleAccordion('acc-3')">
-          What are locators in Selenium? <span class="accordion-arrow">▼</span>
-        </div>
-        <div class="accordion-body">
-          Locators are used to identify HTML elements on a webpage. Selenium supports: id, name, className, tagName, linkText, partialLinkText, cssSelector, and xpath.
-        </div>
-      </div>
-      <div class="accordion" id="acc-4">
-        <div class="accordion-header" onclick="toggleAccordion('acc-4')">
-          What is implicit wait vs explicit wait? <span class="accordion-arrow">▼</span>
-        </div>
-        <div class="accordion-body">
-          Implicit wait tells WebDriver to poll the DOM for a certain duration when trying to find any element. Explicit wait makes WebDriver wait for a specific condition before proceeding further in the code.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DRAG DROP -->
-  <div class="page" id="page-dragdrop">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Drag & Drop</div>
-    <div class="page-header"><h2>Drag & Drop <span class="tag">DRAG</span></h2><p>// practice sortable interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Sortable List — drag to reorder</div>
-      <div class="drag-list" id="drag-list">
-        <div class="drag-item" draggable="true" id="di-1"><span class="drag-handle">⠿</span> 1. Selenium WebDriver</div>
-        <div class="drag-item" draggable="true" id="di-2"><span class="drag-handle">⠿</span> 2. TestNG Framework</div>
-        <div class="drag-item" draggable="true" id="di-3"><span class="drag-handle">⠿</span> 3. Page Object Model</div>
-        <div class="drag-item" draggable="true" id="di-4"><span class="drag-handle">⠿</span> 4. Maven / Gradle</div>
-        <div class="drag-item" draggable="true" id="di-5"><span class="drag-handle">⠿</span> 5. CI/CD Integration</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Drop Zone</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-        <div>
-          <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px;">SOURCE</p>
-          <div id="drag-source" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;min-height:100px;">
-            <div class="drag-item" draggable="true" id="dz-1" ondragstart="dzDragStart(event)"><span class="drag-handle">⠿</span> Item A</div>
-            <div class="drag-item" draggable="true" id="dz-2" ondragstart="dzDragStart(event)"><span class="drag-handle">⠿</span> Item B</div>
-            <div class="drag-item" draggable="true" id="dz-3" ondragstart="dzDragStart(event)"><span class="drag-handle">⠿</span> Item C</div>
-          </div>
-        </div>
-        <div>
-          <p style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px;">DROP TARGET</p>
-          <div class="drag-zone" id="drop-target" ondrop="dzDrop(event)" ondragover="dzDragOver(event)" ondragleave="this.classList.remove('dragover')">
-            Drop items here
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FRAMES -->
-  <div class="page" id="page-frames">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>iFrame</div>
-    <div class="page-header"><h2>iFrame <span class="tag">IFRAME</span></h2><p>// practice switching frames</p></div>
-
-    <div class="card">
-      <div class="card-title">Embedded iFrame</div>
-      <div class="iframe-wrap">
-        <div class="iframe-header">id: frame-1 — src: about:blank (inline content)</div>
-        <iframe id="frame-1" srcdoc='
-          <style>body{background:#0d0f14;color:#e8ecf5;font-family:monospace;padding:20px;}input{background:#1c1f2a;border:1px solid #2a2f3e;color:#e8ecf5;padding:8px;border-radius:6px;width:200px;}button{background:#00e5a0;color:#000;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700;margin-left:8px;}</style>
-          <p style="font-size:12px;color:#6b728a;margin-bottom:12px;">// You are inside iFrame #1</p>
-          <input type="text" id="frame-input" placeholder="Type inside the frame">
-          <button onclick="document.getElementById(\"frame-output\").textContent = \"Value: \" + document.getElementById(\"frame-input\").value">Get</button>
-          <p id="frame-output" style="margin-top:12px;font-size:12px;color:#00e5a0;"></p>
-        '></iframe>
-      </div>
-      <p style="font-family:var(--mono);font-size:12px;color:var(--muted);">Use <code style="color:var(--accent);">driver.switchTo().frame("frame-1")</code> to interact with elements inside.</p>
-    </div>
-  </div>
-
-  <!-- LOGIN -->
-  <div class="page" id="page-login">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Login</div>
-    <div class="page-header"><h2>Login Form <span class="tag">FORM</span></h2><p>// test credentials: admin / admin123</p></div>
-
-    <div class="login-box">
-      <div class="card">
-        <div class="card-title">Login</div>
-        <label>id: login-username</label>
-        <input type="text" id="login-username" placeholder="Username" />
-        <label>id: login-password</label>
-        <input type="password" id="login-password" placeholder="Password" />
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <label class="check-item" style="margin:0;font-size:12px;">
-            <input type="checkbox" id="login-remember"> Remember me
-          </label>
-          <a href="#" style="color:var(--accent2);font-size:12px;font-family:var(--mono);">Forgot password?</a>
-        </div>
-        <button class="btn btn-primary" id="btn-login" onclick="doLogin()" style="width:100%;justify-content:center;">Login</button>
-        <div id="login-result" style="margin-top:16px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- REGISTRATION -->
-  <div class="page" id="page-register">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Registration</div>
-    <div class="page-header"><h2>Registration Form <span class="tag">FORM</span></h2><p>// practice full form filling</p></div>
-
-    <div class="card">
-      <div class="card-title">Personal Information</div>
-      <div class="form-row">
-        <div><label>id: reg-fname</label><input type="text" id="reg-fname" placeholder="First Name" /></div>
-        <div><label>id: reg-lname</label><input type="text" id="reg-lname" placeholder="Last Name" /></div>
-      </div>
-      <label>id: reg-email</label>
-      <input type="email" id="reg-email" placeholder="Email Address" />
-      <label>id: reg-phone</label>
-      <input type="text" id="reg-phone" placeholder="Phone Number" />
-      <label>id: reg-dob</label>
-      <input type="date" id="reg-dob" style="margin-bottom:16px;" />
-
-      <div class="card-title">Account Details</div>
-      <label>id: reg-username</label>
-      <input type="text" id="reg-username" placeholder="Choose a username" />
-      <label>id: reg-password</label>
-      <input type="password" id="reg-password" placeholder="Create password" />
-      <label>id: reg-confirm-password</label>
-      <input type="password" id="reg-confirm-password" placeholder="Confirm password" />
-
-      <div class="card-title">Preferences</div>
-      <label>id: reg-course</label>
-      <select id="reg-course">
-        <option value="">-- Select Course --</option>
-        <option>Selenium with Java</option>
-        <option>Selenium with Python</option>
-        <option>Cypress</option>
-        <option>Playwright</option>
-        <option>Java Full Stack</option>
-      </select>
-
-      <label>id: reg-gender</label>
-      <div class="radio-group" style="flex-direction:row;gap:20px;">
-        <label class="radio-item"><input type="radio" name="reg-gender" value="Male"> Male</label>
-        <label class="radio-item"><input type="radio" name="reg-gender" value="Female"> Female</label>
-        <label class="radio-item"><input type="radio" name="reg-gender" value="Other"> Other</label>
-      </div>
-
-      <div style="margin:16px 0;">
-        <label class="check-item"><input type="checkbox" id="reg-terms"> I agree to the Terms & Conditions</label>
-      </div>
-
-      <button class="btn btn-primary" id="btn-register" onclick="doRegister()">Register</button>
-      <button class="btn btn-ghost" onclick="resetRegForm()">Reset</button>
-      <div id="reg-result" style="margin-top:16px;"></div>
-    </div>
-  </div>
-
-  <!-- VALIDATION -->
-  <div class="page" id="page-validation">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Form Validation</div>
-    <div class="page-header"><h2>Form Validation <span class="tag">VALIDATION</span></h2><p>// practice testing validation messages</p></div>
-
-    <div class="card">
-      <div class="card-title">Validation Form</div>
-      <label>Name (required, min 3 chars) — id: val-name</label>
-      <input type="text" id="val-name" placeholder="Enter name" />
-      <div id="err-name" style="color:var(--accent3);font-size:11px;font-family:var(--mono);margin-top:-12px;margin-bottom:12px;"></div>
-
-      <label>Email (required, valid format) — id: val-email</label>
-      <input type="text" id="val-email" placeholder="Enter email" />
-      <div id="err-email" style="color:var(--accent3);font-size:11px;font-family:var(--mono);margin-top:-12px;margin-bottom:12px;"></div>
-
-      <label>Phone (10 digits) — id: val-phone</label>
-      <input type="text" id="val-phone" placeholder="Enter 10-digit phone" />
-      <div id="err-phone" style="color:var(--accent3);font-size:11px;font-family:var(--mono);margin-top:-12px;margin-bottom:12px;"></div>
-
-      <label>Password (min 8 chars, 1 number) — id: val-pass</label>
-      <input type="password" id="val-pass" placeholder="Enter password" />
-      <div id="err-pass" style="color:var(--accent3);font-size:11px;font-family:var(--mono);margin-top:-12px;margin-bottom:12px;"></div>
-
-      <button class="btn btn-primary" id="btn-validate" onclick="validateForm()">Submit & Validate</button>
-      <div id="val-success" style="margin-top:16px;"></div>
-    </div>
-  </div>
-
-  <!-- DYNAMIC ELEMENTS -->
-  <div class="page" id="page-dynamic">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Dynamic Elements</div>
-    <div class="page-header"><h2>Dynamic Elements <span class="tag">WAIT</span></h2><p>// practice waits and dynamic content</p></div>
-
-    <div class="card">
-      <div class="card-title">Delayed Element (Explicit Wait)</div>
-      <button class="btn btn-primary" id="btn-load-element" onclick="loadDelayed()">Load Element (3s delay)</button>
-      <div id="delayed-element" style="display:none;margin-top:16px;">
-        <div class="alert alert-success" id="delayed-content">✅ Dynamic element loaded! (id: delayed-content)</div>
-      </div>
-      <div id="delayed-loader" style="display:none;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--muted);">⏳ Loading...</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Progress Bar (Dynamic Width)</div>
-      <button class="btn btn-primary" id="btn-start-progress" onclick="startProgress()">Start Progress</button>
-      <button class="btn btn-ghost" onclick="resetProgress()">Reset</button>
-      <div style="margin-top:16px;">
-        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px;">
-          <span>Progress</span><span id="progress-pct">0%</span>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-bar" style="width:0%;background:var(--accent);"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Dynamic Table Row Add</div>
-      <button class="btn btn-primary" id="btn-add-row" onclick="addDynamicRow()">Add Random Row</button>
-      <div style="overflow-x:auto;margin-top:12px;">
-        <table class="data-table" id="dynamic-table">
-          <thead><tr><th>ID</th><th>Name</th><th>Score</th><th>Timestamp</th></tr></thead>
-          <tbody id="dynamic-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCROLL -->
-  <div class="page" id="page-scroll">
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Scroll & Waits</div>
-    <div class="page-header"><h2>Scroll & Waits <span class="tag">SCROLL</span></h2><p>// practice scroll-based interactions</p></div>
-
-    <div class="card">
-      <div class="card-title">Scroll to Element</div>
-      <button class="btn btn-primary" onclick="document.getElementById('target-element').scrollIntoView({behavior:'smooth'})">Scroll to Target</button>
-      <div style="height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;margin-top:12px;padding:16px;font-family:var(--mono);font-size:12px;color:var(--muted);line-height:2;" id="scroll-container">
-        <p>Line 1 — Scroll down to find the target element</p>
-        <p>Line 2</p><p>Line 3</p><p>Line 4</p><p>Line 5</p>
-        <p>Line 6</p><p>Line 7</p><p>Line 8</p><p>Line 9</p><p>Line 10</p>
-        <p>Line 11</p><p>Line 12</p><p>Line 13</p><p>Line 14</p><p>Line 15</p>
-        <div id="target-element" style="background:rgba(0,229,160,0.1);border:1px solid var(--accent);border-radius:8px;padding:12px;color:var(--accent);">
-          🎯 TARGET ELEMENT FOUND (id: target-element)
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Infinite Scroll Simulation</div>
-      <div id="infinite-container" style="height:250px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;" onscroll="checkInfiniteScroll(this)">
-        <div id="infinite-list" style="padding:12px;font-family:var(--mono);font-size:12px;"></div>
-        <div id="infinite-loader" style="text-align:center;padding:12px;color:var(--muted);font-family:var(--mono);font-size:11px;">↓ Scroll to load more</div>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- ─── Modals ─── -->
-<div class="modal-overlay" id="modal1">
-  <div class="modal-box">
-    <h3>Basic Modal</h3>
-    <p>This is a modal dialog box. Use <code style="color:var(--accent);font-family:var(--mono);font-size:12px;">driver.findElement(By.id("modal1"))</code> to interact.</p>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="modal1-close" onclick="closeModal('modal1', 'closed')">Close</button>
-      <button class="btn btn-primary" id="modal1-confirm" onclick="closeModal('modal1', 'confirmed')">Confirm</button>
+  <div class="card">
+    <div class="card-title">Select All Checkbox</div>
+    <label class="check-item" style="margin-bottom:12px;font-weight:700;"><input type="checkbox" id="chk-all-master" onchange="masterCheck(this)"> Select All</label>
+    <div class="check-group">
+      <label class="check-item"><input type="checkbox" class="chk-sub" value="Automation"> Automation Testing</label>
+      <label class="check-item"><input type="checkbox" class="chk-sub" value="Manual"> Manual Testing</label>
+      <label class="check-item"><input type="checkbox" class="chk-sub" value="API"> API Testing</label>
+      <label class="check-item"><input type="checkbox" class="chk-sub" value="Performance"> Performance Testing</label>
     </div>
   </div>
 </div>
 
+<!-- RADIO -->
+<div class="page" id="page-radio">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Radio Button</div>
+  <div class="page-header"><h2>Radio Button <span class="tag">RADIO</span></h2><p>// practice single selection</p></div>
+  <div class="card">
+    <div class="card-title">Gender</div>
+    <div class="radio-group">
+      <label class="radio-item"><input type="radio" name="gender" id="radio-male" value="Male"> Male</label>
+      <label class="radio-item"><input type="radio" name="gender" id="radio-female" value="Female"> Female</label>
+      <label class="radio-item"><input type="radio" name="gender" id="radio-other" value="Other"> Other</label>
+    </div>
+    <button class="btn btn-primary" onclick="getRadio('gender', 'radio-output')">Get Selected</button>
+    <div class="output-box" id="radio-output">// selected value appears here</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Experience Level</div>
+    <div class="radio-group">
+      <label class="radio-item"><input type="radio" name="exp" id="radio-fresher" value="Fresher"> Fresher</label>
+      <label class="radio-item"><input type="radio" name="exp" id="radio-junior" value="1-2 Years"> 1–2 Years</label>
+      <label class="radio-item"><input type="radio" name="exp" id="radio-mid" value="3-5 Years"> 3–5 Years</label>
+      <label class="radio-item"><input type="radio" name="exp" id="radio-senior" value="5+ Years"> 5+ Years</label>
+    </div>
+    <button class="btn btn-primary" onclick="getRadio('exp', 'radio-exp-output')">Get Selected</button>
+    <div class="output-box" id="radio-exp-output">// selected value appears here</div>
+  </div>
+</div>
+
+<!-- DROPDOWN -->
+<div class="page" id="page-dropdown">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Dropdown</div>
+  <div class="page-header"><h2>Dropdown <span class="tag">SELECT</span></h2><p>// practice select element interactions</p></div>
+  <div class="card">
+    <div class="card-title">Single Select Dropdown</div>
+    <label>id: dd-country</label>
+    <select id="dd-country">
+      <option value="">-- Select Country --</option>
+      <option>India</option><option>United States</option><option>United Kingdom</option>
+      <option>Canada</option><option>Australia</option><option>Germany</option><option>Japan</option>
+    </select>
+    <label>id: dd-lang</label>
+    <select id="dd-lang">
+      <option value="">-- Select Language --</option>
+      <option>Java</option><option>Python</option><option>JavaScript</option><option>C#</option><option>Ruby</option>
+    </select>
+    <button class="btn btn-primary" onclick="getDropdowns()">Get Values</button>
+    <div class="output-box" id="dd-output">// selected values appear here</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Multi Select</div>
+    <label>id: dd-multi (hold Ctrl/Cmd to select multiple)</label>
+    <select id="dd-multi" multiple size="5" style="height:auto;">
+      <option>Selenium</option><option>Cypress</option><option>Playwright</option>
+      <option>Appium</option><option>RestAssured</option><option>TestNG</option><option>JUnit</option>
+    </select>
+    <button class="btn btn-primary" onclick="getMultiSelect()">Get Selected</button>
+    <div class="output-box" id="dd-multi-output">// selected values appear here</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TABLE — FIXED with Add / Edit / Delete
+     ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-table">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Table</div>
+  <div class="page-header"><h2>Table <span class="tag">TABLE</span></h2><p>// practice reading, adding, editing and deleting table data</p></div>
+
+  <div class="card">
+    <div class="card-title">Add New Row</div>
+    <div class="add-row-form">
+      <h4>// fill in details to add a new student row</h4>
+      <div class="form-row">
+        <div>
+          <label>Name — id: add-name</label>
+          <input type="text" id="add-name" placeholder="e.g. Alice Smith" />
+        </div>
+        <div>
+          <label>Course — id: add-course</label>
+          <select id="add-course">
+            <option value="">-- Select Course --</option>
+            <option>Selenium with Java</option>
+            <option>Selenium with Python</option>
+            <option>Cypress</option>
+            <option>Playwright</option>
+            <option>Java Full Stack</option>
+          </select>
+        </div>
+        <div>
+          <label>Batch — id: add-batch</label>
+          <input type="text" id="add-batch" placeholder="e.g. B12" />
+        </div>
+        <div>
+          <label>Status — id: add-status</label>
+          <select id="add-status">
+            <option value="">-- Select Status --</option>
+            <option>Active</option>
+            <option>Inactive</option>
+            <option>Completed</option>
+          </select>
+        </div>
+        <div>
+          <label>Score — id: add-score</label>
+          <input type="number" id="add-score" placeholder="e.g. 88" min="0" max="100" />
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-add-row" onclick="addTableRow()">+ Add Row</button>
+      <div class="output-box" id="table-output" style="margin-top:12px;">// table interactions appear here</div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="main-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Course</th><th>Batch</th><th>Status</th><th>Score</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pagination Table</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="page-table-el">
+        <thead><tr><th>#</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th></tr></thead>
+        <tbody id="paginated-body"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;align-items:center;">
+      <button class="btn btn-ghost" id="btn-prev" onclick="prevPage()">← Prev</button>
+      <span id="page-info" style="font-family:var(--mono);font-size:12px;color:var(--muted);">Page 1 of 3</span>
+      <button class="btn btn-ghost" id="btn-next" onclick="nextPage()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT ROW MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-box">
+    <h3>✏️ Edit Row</h3>
+    <p>Update the student details below.</p>
+    <input type="hidden" id="edit-row-id" />
+    <div class="modal-form-row">
+      <div>
+        <label>Name</label>
+        <input type="text" id="edit-name" placeholder="Name" />
+      </div>
+      <div>
+        <label>Course</label>
+        <select id="edit-course">
+          <option>Selenium with Java</option>
+          <option>Selenium with Python</option>
+          <option>Cypress</option>
+          <option>Playwright</option>
+          <option>Java Full Stack</option>
+        </select>
+      </div>
+      <div>
+        <label>Batch</label>
+        <input type="text" id="edit-batch" placeholder="Batch" />
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="edit-status">
+          <option>Active</option>
+          <option>Inactive</option>
+          <option>Completed</option>
+        </select>
+      </div>
+      <div>
+        <label>Score</label>
+        <input type="number" id="edit-score" placeholder="Score" min="0" max="100" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('edit-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-edit" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal-box">
+    <h3>🗑️ Delete Row</h3>
+    <p>Are you sure you want to delete this row? This action cannot be undone.</p>
+    <input type="hidden" id="delete-row-id" />
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- LINKS -->
+<div class="page" id="page-links">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Links</div>
+  <div class="page-header"><h2>Links <span class="tag">ANCHOR</span></h2><p>// practice link interactions</p></div>
+  <div class="card">
+    <div class="card-title">Navigation Links</div>
+    <a id="link-textbox" onclick="showPage('textbox')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Text Box</a>
+    <a id="link-button" onclick="showPage('button')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Buttons</a>
+    <a id="link-table" onclick="showPage('table')" style="display:block;color:var(--accent);font-family:var(--mono);font-size:13px;margin-bottom:10px;cursor:pointer;">→ Go to Table</a>
+  </div>
+  <div class="card">
+    <div class="card-title">External Links</div>
+    <a id="link-google" href="https://www.google.com" target="_blank" style="display:block;color:var(--accent2);font-family:var(--mono);font-size:13px;margin-bottom:10px;">↗ Google (opens in new tab)</a>
+    <a id="link-github" href="https://www.github.com" target="_blank" style="display:block;color:var(--accent2);font-family:var(--mono);font-size:13px;margin-bottom:10px;">↗ GitHub (opens in new tab)</a>
+  </div>
+  <div class="card">
+    <div class="card-title">Tooltip Buttons</div>
+    <p style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:16px;">Hover over buttons to see tooltips:</p>
+    <div class="tooltip-wrap"><button class="btn btn-primary" id="btn-tooltip1">Hover Me 1</button><span class="tooltip-text">This is a tooltip!</span></div>
+    <div class="tooltip-wrap"><button class="btn btn-secondary" id="btn-tooltip2">Hover Me 2</button><span class="tooltip-text">Another tooltip here</span></div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="page" id="page-alerts">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Alerts</div>
+  <div class="page-header"><h2>Alerts / Popups <span class="tag">ALERT</span></h2><p>// practice browser &amp; custom alerts</p></div>
+  <div class="card">
+    <div class="card-title">Browser Alerts</div>
+    <button class="btn btn-primary" id="btn-alert" onclick="triggerAlert()">Simple Alert</button>
+    <button class="btn btn-secondary" id="btn-confirm" onclick="triggerConfirm()">Confirm Dialog</button>
+    <button class="btn btn-ghost" id="btn-prompt" onclick="triggerPrompt()">Prompt Dialog</button>
+    <div class="output-box" id="alert-output">// dialog result appears here</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Custom Notification Alerts</div>
+    <button class="btn btn-primary" onclick="showAlert('success','Operation completed successfully!')">✅ Success</button>
+    <button class="btn btn-danger" onclick="showAlert('error','Something went wrong!')">❌ Error</button>
+    <button class="btn btn-ghost" onclick="showAlert('warning','This action cannot be undone.')">⚠️ Warning</button>
+    <button class="btn btn-secondary" onclick="showAlert('info','Your session will expire in 5 minutes.')">ℹ️ Info</button>
+    <div id="custom-alerts" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="page" id="page-modal">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Modal</div>
+  <div class="page-header"><h2>Modal Dialog <span class="tag">MODAL</span></h2><p>// practice modal / dialog interactions</p></div>
+  <div class="card">
+    <div class="card-title">Basic Modal</div>
+    <button class="btn btn-primary" id="btn-open-modal" onclick="openModal('modal1')">Open Modal</button>
+    <button class="btn btn-secondary" id="btn-open-modal2" onclick="openModal('modal2')">Open Confirm Modal</button>
+    <div class="output-box" id="modal-output">// modal result appears here</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="page" id="page-tabs">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Tabs</div>
+  <div class="page-header"><h2>Tabs <span class="tag">TABS</span></h2><p>// practice tab switching</p></div>
+  <div class="card">
+    <div class="card-title">Tabbed Content</div>
+    <div class="tab-list">
+      <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">Overview</button>
+      <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Details</button>
+      <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">Settings</button>
+      <button class="tab-btn" id="tab-btn-4" onclick="switchTab(4)">Logs</button>
+    </div>
+    <div class="tab-panel active" id="tab-panel-1"><p style="font-size:13px;color:var(--muted);font-family:var(--mono);line-height:1.7;">📋 <strong style="color:var(--text);">Tab 1: Overview</strong><br><br>This is the overview tab content. Use Selenium to verify that clicking each tab shows the correct content panel.<br><br><span class="badge badge-green">active</span> This tab is currently active.</p></div>
+    <div class="tab-panel" id="tab-panel-2"><p style="font-size:13px;color:var(--muted);font-family:var(--mono);line-height:1.7;">🔍 <strong style="color:var(--text);">Tab 2: Details</strong><br><br>This panel contains detailed information. Verify that switching to this tab hides the other panels.</p></div>
+    <div class="tab-panel" id="tab-panel-3"><p style="font-size:13px;color:var(--muted);font-family:var(--mono);line-height:1.7;">⚙️ <strong style="color:var(--text);">Tab 3: Settings</strong><br><br>Settings content goes here. Practice finding elements inside specific tab panels.</p></div>
+    <div class="tab-panel" id="tab-panel-4"><p style="font-size:13px;color:var(--muted);font-family:var(--mono);line-height:1.7;">📜 <strong style="color:var(--text);">Tab 4: Logs</strong><br><br>[2024-01-01 10:00:00] App started<br>[2024-01-01 10:01:12] User logged in<br>[2024-01-01 10:05:33] Test executed<br>[2024-01-01 10:06:01] Test passed ✓</p></div>
+  </div>
+</div>
+
+<!-- ACCORDION -->
+<div class="page" id="page-accordion">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Accordion</div>
+  <div class="page-header"><h2>Accordion <span class="tag">ACCORDION</span></h2><p>// practice expand/collapse</p></div>
+  <div class="card">
+    <div class="card-title">FAQ Accordion</div>
+    <div class="accordion" id="acc1">
+      <div class="accordion-header" onclick="toggleAccordion('acc1')">What is Selenium? <span class="accordion-arrow">▼</span></div>
+      <div class="accordion-body">Selenium is an open-source framework for automating web browsers. It supports multiple programming languages including Java, Python, C#, and more.</div>
+    </div>
+    <div class="accordion" id="acc2">
+      <div class="accordion-header" onclick="toggleAccordion('acc2')">What is WebDriver? <span class="accordion-arrow">▼</span></div>
+      <div class="accordion-body">WebDriver is a remote control interface that enables introspection and control of user agents.</div>
+    </div>
+    <div class="accordion" id="acc3">
+      <div class="accordion-header" onclick="toggleAccordion('acc3')">What are locators in Selenium? <span class="accordion-arrow">▼</span></div>
+      <div class="accordion-body">Locators are used to identify HTML elements on a webpage. Selenium supports: id, name, className, tagName, linkText, partialLinkText, cssSelector, and xpath.</div>
+    </div>
+    <div class="accordion" id="acc4">
+      <div class="accordion-header" onclick="toggleAccordion('acc4')">What is implicit wait vs explicit wait? <span class="accordion-arrow">▼</span></div>
+      <div class="accordion-body">Implicit wait tells WebDriver to poll the DOM for a certain duration. Explicit wait makes WebDriver wait for a specific condition before proceeding.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAG & DROP -->
+<div class="page" id="page-dragdrop">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Drag &amp; Drop</div>
+  <div class="page-header"><h2>Drag &amp; Drop <span class="tag">DRAG</span></h2><p>// practice sortable interactions</p></div>
+  <div class="card">
+    <div class="card-title">Sortable List — drag to reorder</div>
+    <div class="drag-list" id="drag-list">
+      <div class="drag-item" draggable="true" id="drag-1"><span class="drag-handle">⠿</span> 1. Selenium WebDriver</div>
+      <div class="drag-item" draggable="true" id="drag-2"><span class="drag-handle">⠿</span> 2. TestNG Framework</div>
+      <div class="drag-item" draggable="true" id="drag-3"><span class="drag-handle">⠿</span> 3. Page Object Model</div>
+      <div class="drag-item" draggable="true" id="drag-4"><span class="drag-handle">⠿</span> 4. Maven / Gradle</div>
+      <div class="drag-item" draggable="true" id="drag-5"><span class="drag-handle">⠿</span> 5. CI/CD Integration</div>
+    </div>
+  </div>
+</div>
+
+<!-- IFRAME -->
+<div class="page" id="page-frames">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>iFrame</div>
+  <div class="page-header"><h2>iFrame <span class="tag">IFRAME</span></h2><p>// practice switching frames</p></div>
+  <div class="card">
+    <div class="card-title">Embedded iFrame</div>
+    <div class="iframe-wrap">
+      <div class="iframe-header">id: frame-1 — src: about:blank (inline content)</div>
+      <iframe id="frame-1" srcdoc="<html><body style='background:#fff;padding:20px;font-family:monospace;'><h3 style='color:#7b5fff;'>Inside the iFrame</h3><p>Use <code>driver.switchTo().frame(&quot;frame-1&quot;)</code> to interact.</p><input id='frame-input' placeholder='Type here inside iFrame' style='border:1px solid #ccc;padding:6px;border-radius:4px;width:80%;'/><br><br><button id='frame-btn' onclick='this.textContent=\"Clicked!\"' style='background:#00e5a0;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold;'>Click Me</button></body></html>"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="page" id="page-login">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Login</div>
+  <div class="page-header"><h2>Login Form <span class="tag">FORM</span></h2><p>// test credentials: admin / admin123</p></div>
+  <div class="card login-box">
+    <div class="card-title">Login</div>
+    <label>id: login-username</label><input type="text" id="login-username" placeholder="Username" />
+    <label>id: login-password</label><input type="password" id="login-password" placeholder="Password" />
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <label class="check-item" style="margin:0;"><input type="checkbox" id="chk-remember"> Remember me</label>
+      <a href="#" style="font-size:12px;color:var(--accent2);font-family:var(--mono);">Forgot password?</a>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Login</button>
+    <div class="output-box" id="login-output" style="margin-top:16px;">// login result appears here</div>
+  </div>
+</div>
+
+<!-- REGISTRATION -->
+<div class="page" id="page-register">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Registration</div>
+  <div class="page-header"><h2>Registration Form <span class="tag">FORM</span></h2><p>// practice full form filling</p></div>
+  <div class="card">
+    <div class="card-title">Personal Information</div>
+    <div class="form-row">
+      <div><label>id: reg-fname</label><input type="text" id="reg-fname" placeholder="First Name" /></div>
+      <div><label>id: reg-lname</label><input type="text" id="reg-lname" placeholder="Last Name" /></div>
+    </div>
+    <label>id: reg-email</label><input type="email" id="reg-email" placeholder="Email Address" />
+    <label>id: reg-phone</label><input type="text" id="reg-phone" placeholder="Phone Number" />
+    <label>id: reg-dob</label><input type="date" id="reg-dob" />
+  </div>
+  <div class="card">
+    <div class="card-title">Account Details</div>
+    <label>id: reg-username</label><input type="text" id="reg-username" placeholder="Username" />
+    <label>id: reg-password</label><input type="password" id="reg-password" placeholder="Password" />
+    <label>id: reg-confirm-password</label><input type="password" id="reg-confirm-password" placeholder="Confirm Password" />
+  </div>
+  <div class="card">
+    <div class="card-title">Preferences</div>
+    <label>id: reg-course</label>
+    <select id="reg-course"><option value="">-- Select Course --</option><option>Selenium with Java</option><option>Selenium with Python</option><option>Cypress</option><option>Playwright</option><option>Java Full Stack</option></select>
+    <label>id: reg-gender</label>
+    <div class="radio-group">
+      <label class="radio-item"><input type="radio" name="reg-gender" value="Male"> Male</label>
+      <label class="radio-item"><input type="radio" name="reg-gender" value="Female"> Female</label>
+      <label class="radio-item"><input type="radio" name="reg-gender" value="Other"> Other</label>
+    </div>
+    <label class="check-item" style="margin-bottom:16px;"><input type="checkbox" id="chk-terms"> I agree to the Terms &amp; Conditions</label>
+    <button class="btn btn-primary" onclick="doRegister()">Register</button>
+    <button class="btn btn-ghost" onclick="resetRegister()">Reset</button>
+    <div class="output-box" id="register-output" style="margin-top:16px;">// register result appears here</div>
+  </div>
+</div>
+
+<!-- FORM VALIDATION -->
+<div class="page" id="page-validation">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Form Validation</div>
+  <div class="page-header"><h2>Form Validation <span class="tag">VALIDATION</span></h2><p>// practice testing validation messages</p></div>
+  <div class="card">
+    <div class="card-title">Validation Form</div>
+    <label>Name (required, min 3 chars) — id: val-name</label><input type="text" id="val-name" placeholder="Your name" />
+    <label>Email (required, valid format) — id: val-email</label><input type="email" id="val-email" placeholder="your@email.com" />
+    <label>Phone (10 digits) — id: val-phone</label><input type="text" id="val-phone" placeholder="10-digit phone" />
+    <label>Password (min 8 chars, 1 number) — id: val-pass</label><input type="password" id="val-pass" placeholder="Password" />
+    <button class="btn btn-primary" onclick="validateForm()">Submit &amp; Validate</button>
+    <div id="val-output" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<!-- DYNAMIC -->
+<div class="page" id="page-dynamic">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Dynamic Elements</div>
+  <div class="page-header"><h2>Dynamic Elements <span class="tag">WAIT</span></h2><p>// practice waits and dynamic content</p></div>
+  <div class="card">
+    <div class="card-title">Delayed Element (Explicit Wait)</div>
+    <button class="btn btn-primary" id="btn-load-dynamic" onclick="loadDynamic()">Load Element (3s delay)</button>
+    <div id="delayed-content" style="display:none;" class="output-box" style="margin-top:12px;">✅ Dynamic element loaded! (id: delayed-content)</div>
+    <div id="loading-indicator" style="display:none;color:var(--muted);font-family:var(--mono);font-size:12px;margin-top:12px;">⏳ Loading...</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Progress Bar (Dynamic Width)</div>
+    <button class="btn btn-primary" id="btn-start-progress" onclick="startProgress()">Start Progress</button>
+    <button class="btn btn-ghost" onclick="resetProgress()">Reset</button>
+    <div class="progress-bar-wrap" style="margin-top:16px;"><div class="progress-bar-fill" id="progress-fill" style="width:0%;background:var(--accent);"></div></div>
+    <div id="progress-label" style="font-family:var(--mono);font-size:12px;color:var(--muted);">Progress <span id="progress-val">0</span>%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Dynamic Table Row Add</div>
+    <button class="btn btn-primary" id="btn-add-dynamic" onclick="addDynamicRow()">Add Random Row</button>
+    <div style="overflow-x:auto;margin-top:12px;">
+      <table class="data-table"><thead><tr><th>ID</th><th>Name</th><th>Score</th><th>Timestamp</th></tr></thead><tbody id="dynamic-table-body"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- SCROLL -->
+<div class="page" id="page-scroll">
+  <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span>Scroll &amp; Waits</div>
+  <div class="page-header"><h2>Scroll &amp; Waits <span class="tag">SCROLL</span></h2><p>// practice scroll-based interactions</p></div>
+  <div class="card">
+    <div class="card-title">Scroll to Element</div>
+    <button class="btn btn-primary" onclick="document.getElementById('target-element').scrollIntoView({behavior:'smooth'})">Scroll to Target</button>
+    <div style="height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--muted);">
+      <div>Line 1 — Scroll down to find the target element</div>
+      <div>Line 2</div><div>Line 3</div><div>Line 4</div><div>Line 5</div>
+      <div>Line 6</div><div>Line 7</div><div>Line 8</div><div>Line 9</div><div>Line 10</div>
+      <div>Line 11</div><div>Line 12</div><div>Line 13</div><div>Line 14</div><div>Line 15</div>
+      <div id="target-element" style="background:rgba(0,229,160,0.1);border:1px solid var(--accent);border-radius:6px;padding:10px;margin-top:8px;color:var(--accent);">🎯 TARGET ELEMENT FOUND (id: target-element)</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Infinite Scroll Simulation</div>
+    <div id="infinite-scroll-container" style="height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:12px;" onscroll="checkInfiniteScroll(this)">
+      <div id="infinite-items"></div>
+      <div id="scroll-loader" style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;padding:12px;">↓ Scroll to load more</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- GENERIC MODALS (for modal page) -->
+<div class="modal-overlay" id="modal1">
+  <div class="modal-box">
+    <h3>Basic Modal</h3>
+    <p>This is a modal dialog box. Use <code style="font-family:var(--mono);color:var(--accent);">driver.findElement(By.id("modal1"))</code> to interact.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal1');setOut('modal-output','Closed modal')">Close</button>
+      <button class="btn btn-primary" onclick="closeModal('modal1');setOut('modal-output','Confirmed modal')">Confirm</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="modal2">
   <div class="modal-box">
     <h3>⚠️ Confirm Action</h3>
     <p>Are you sure you want to perform this action? This cannot be undone.</p>
     <div class="modal-actions">
-      <button class="btn btn-ghost" id="modal2-cancel" onclick="closeModal('modal2', 'cancelled')">Cancel</button>
-      <button class="btn btn-danger" id="modal2-delete" onclick="closeModal('modal2', 'deleted')">Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('modal2');setOut('modal-output','Cancelled')">Cancel</button>
+      <button class="btn btn-danger" onclick="closeModal('modal2');setOut('modal-output','Deleted!')">Delete</button>
     </div>
   </div>
 </div>
 
 <script>
 // ─── Navigation ───
-let currentPage = 'home';
-
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.getAttribute('onclick')?.includes("'" + id + "'")) n.classList.add('active');
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('active');
   });
-  currentPage = id;
   window.scrollTo(0, 0);
 }
 
+function setOut(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+
 // ─── Text Box ───
 function getTextboxValues() {
-  const vals = {
-    name: document.getElementById('txt-name').value,
-    email: document.getElementById('txt-email').value,
-    phone: document.getElementById('txt-phone').value,
-    number: document.getElementById('txt-number').value,
-  };
-  document.getElementById('textbox-output').textContent = JSON.stringify(vals, null, 2);
+  const vals = ['txt-name','txt-email','txt-phone','txt-password','txt-number'].map(id => id.replace('txt-','') + ': ' + document.getElementById(id).value).join('\n');
+  setOut('textbox-output', vals);
 }
-
-function clearTextboxes() {
-  ['txt-name','txt-email','txt-phone','txt-password','txt-number'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('textbox-output').textContent = '// cleared';
-}
-
-function showTextareaContent() {
-  document.getElementById('textarea-output').textContent = document.getElementById('txt-area').value || '// (empty)';
-}
+function clearTextboxes() { ['txt-name','txt-email','txt-phone','txt-password','txt-number'].forEach(id => document.getElementById(id).value = ''); setOut('textbox-output','// cleared'); }
+function showTextareaContent() { setOut('textarea-output', document.getElementById('txt-area').value || '// empty'); }
 
 // ─── Buttons ───
-function btnClicked(id) {
-  document.getElementById('btn-output').textContent = `Button clicked: "${id}" at ${new Date().toLocaleTimeString()}`;
-}
-
-let btnOn = true;
+let counter = 0;
+function btnClicked(id) { setOut('btn-output', id + ' clicked at ' + new Date().toLocaleTimeString()); }
 function toggleBtn() {
-  btnOn = !btnOn;
   const b = document.getElementById('btn-toggle');
-  b.textContent = `Toggle Me (${btnOn ? 'ON' : 'OFF'})`;
-  b.className = btnOn ? 'btn btn-primary' : 'btn btn-ghost';
+  const on = b.textContent.includes('ON');
+  b.textContent = on ? 'Toggle Me (OFF)' : 'Toggle Me (ON)';
+  b.className = on ? 'btn btn-danger' : 'btn btn-primary';
 }
-
-let isDisabled = false;
 function toggleDisable() {
-  isDisabled = !isDisabled;
   const t = document.getElementById('btn-disabled-target');
-  t.disabled = isDisabled;
-  document.getElementById('btn-enable-disable').textContent = isDisabled ? 'Click to Enable Below' : 'Click to Disable Below';
+  t.disabled = !t.disabled;
 }
-
-let count = 0;
-function incrementCounter() {
-  count++;
-  document.getElementById('counter-output').textContent = `Count: ${count}`;
-  document.getElementById('counter-output').classList.add('result-flash');
-  setTimeout(() => document.getElementById('counter-output').classList.remove('result-flash'), 500);
-}
-
-function rightClick(e) {
-  e.preventDefault();
-  document.getElementById('click-output').textContent = 'Right click detected!';
-}
+function incrementCounter() { setOut('counter-output', 'Count: ' + (++counter)); }
+function rightClick(e) { e.preventDefault(); setOut('click-output','Right-clicked at ' + new Date().toLocaleTimeString()); }
 
 // ─── Checkboxes ───
-function getChecked() {
-  const checked = [...document.querySelectorAll('input[name="skills"]:checked')].map(c => c.value);
-  document.getElementById('chk-output').textContent = checked.length ? checked.join(', ') : '(none selected)';
-}
-
-function checkAll() {
-  document.querySelectorAll('input[name="skills"]').forEach(c => c.checked = true);
-}
-
-function uncheckAll() {
-  document.querySelectorAll('input[name="skills"]').forEach(c => c.checked = false);
-}
-
-function masterCheck(master) {
-  document.querySelectorAll('.chk-sub').forEach(c => c.checked = master.checked);
-}
+function getChecked() { const vals = [...document.querySelectorAll('[name="skills"]:checked')].map(c => c.value); setOut('chk-output', vals.length ? vals.join(', ') : 'None selected'); }
+function checkAll() { document.querySelectorAll('[name="skills"]').forEach(c => c.checked = true); }
+function uncheckAll() { document.querySelectorAll('[name="skills"]').forEach(c => c.checked = false); }
+function masterCheck(el) { document.querySelectorAll('.chk-sub').forEach(c => c.checked = el.checked); }
 
 // ─── Radio ───
-function getRadio(name, outputId) {
-  const selected = document.querySelector(`input[name="${name}"]:checked`);
-  document.getElementById(outputId).textContent = selected ? selected.value : '(none selected)';
+function getRadio(name, outId) {
+  const sel = document.querySelector('[name="' + name + '"]:checked');
+  setOut(outId, sel ? sel.value : 'None selected');
 }
 
 // ─── Dropdown ───
-function dropdownChanged(id, outputId) {
-  document.getElementById(outputId).textContent = `Selected: ${document.getElementById(id).value}`;
-}
-
-function getDropdowns() {
-  const c = document.getElementById('dd-country').value;
-  const l = document.getElementById('dd-lang').value;
-  document.getElementById('dd-output').textContent = `Country: ${c || '(none)'}\nLanguage: ${l || '(none)'}`;
-}
-
+function getDropdowns() { setOut('dd-output', 'Country: ' + document.getElementById('dd-country').value + '\nLanguage: ' + document.getElementById('dd-lang').value); }
 function getMultiSelect() {
-  const selected = [...document.getElementById('dd-multi').selectedOptions].map(o => o.value);
-  document.getElementById('dd-multi-output').textContent = selected.length ? selected.join(', ') : '(none selected)';
+  const vals = [...document.getElementById('dd-multi').selectedOptions].map(o => o.value);
+  setOut('dd-multi-output', vals.length ? vals.join(', ') : 'None selected');
 }
+function dropdownChanged(id, outId) { setOut(outId, 'Selected: ' + document.getElementById(id).value); }
 
-// ─── Table ───
-const tableData = [
-  { id: 1, num: '001', name: 'Aarav Shah',   course: 'Selenium Java',   batch: 'Morning', statusClass: 'badge-green',  status: 'Active',   score: 92 },
-  { id: 2, num: '002', name: 'Priya Nair',   course: 'Cypress',         batch: 'Evening', statusClass: 'badge-purple', status: 'Pending',  score: 87 },
-  { id: 3, num: '003', name: 'Rohit Verma',  course: 'Java Full Stack', batch: 'Morning', statusClass: 'badge-green',  status: 'Active',   score: 78 },
-  { id: 4, num: '004', name: 'Meena Iyer',   course: 'Playwright',      batch: 'Weekend', statusClass: 'badge-red',    status: 'Inactive', score: 65 },
-  { id: 5, num: '005', name: 'Karan Mehta',  course: 'Python Testing',  batch: 'Evening', statusClass: 'badge-yellow', status: 'On Hold',  score: 81 },
+// ═══════════════════════════════════════════════════════
+// TABLE — Add / Edit / Delete (THE FIXED SECTION)
+// ═══════════════════════════════════════════════════════
+let tableData = [
+  { id: 1, name: 'Alice Johnson',  course: 'Selenium with Java',   batch: 'B10', status: 'Active',    score: 92 },
+  { id: 2, name: 'Bob Martinez',   course: 'Cypress',              batch: 'B11', status: 'Completed', score: 78 },
+  { id: 3, name: 'Carol Lee',      course: 'Playwright',           batch: 'B10', status: 'Active',    score: 85 },
+  { id: 4, name: 'David Kim',      course: 'Selenium with Python', batch: 'B12', status: 'Inactive',  score: 60 },
+  { id: 5, name: 'Eva Green',      course: 'Java Full Stack',      batch: 'B11', status: 'Active',    score: 95 },
 ];
+let nextId = 6;
+
+function statusBadge(status) {
+  const map = { Active: 'badge-green', Inactive: 'badge-red', Completed: 'badge-purple' };
+  return `<span class="badge ${map[status] || 'badge-yellow'}">${status}</span>`;
+}
 
 function renderTable() {
   const tbody = document.getElementById('table-body');
-  tbody.innerHTML = tableData.map(r => `
-    <tr id="row-${r.id}">
-      <td>${r.num}</td><td>${r.name}</td><td>${r.course}</td><td>${r.batch}</td>
-      <td><span class="badge ${r.statusClass}">${r.status}</span></td>
-      <td>${r.score}</td>
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  tableData.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + row.id;
+    tr.innerHTML = `
+      <td>${row.id}</td>
+      <td>${row.name}</td>
+      <td>${row.course}</td>
+      <td>${row.batch}</td>
+      <td>${statusBadge(row.status)}</td>
+      <td>${row.score}</td>
       <td>
-        <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="editRow(${r.id})">Edit</button>
-        <button class="btn btn-danger"    style="padding:4px 10px;font-size:11px;" onclick="deleteRow(${r.id})">Delete</button>
+        <button class="btn btn-secondary btn-sm" id="btn-edit-${row.id}" onclick="openEditModal(${row.id})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" id="btn-delete-${row.id}" onclick="openDeleteModal(${row.id})">🗑️ Delete</button>
       </td>
-    </tr>`).join('');
-}
-
-function editRow(id) {
-  document.getElementById('table-output').textContent = `Edit clicked for Row ID: ${id}`;
-}
-
-function deleteRow(id) {
-  const idx = tableData.findIndex(r => r.id === id);
-  if (idx !== -1) {
-    tableData.splice(idx, 1);
-    renderTable();
-    document.getElementById('table-output').textContent = `Row ${id} deleted. Remaining rows: ${tableData.length}`;
-  }
-}
-
-// Paginated table data
-const products = [
-  ['P001','Laptop Pro','Electronics','₹85,000','In Stock'],
-  ['P002','Wireless Mouse','Peripherals','₹1,200','In Stock'],
-  ['P003','USB-C Hub','Peripherals','₹2,500','Low Stock'],
-  ['P004','Mechanical Keyboard','Peripherals','₹4,500','In Stock'],
-  ['P005','Monitor 4K','Electronics','₹35,000','Out of Stock'],
-  ['P006','Webcam HD','Peripherals','₹3,800','In Stock'],
-  ['P007','SSD 1TB','Storage','₹7,000','In Stock'],
-  ['P008','RAM 16GB','Memory','₹5,500','Low Stock'],
-  ['P009','Gaming Chair','Furniture','₹18,000','In Stock'],
-];
-
-let currentPageNum = 1;
-const rowsPerPage = 3;
-
-function renderPaginatedTable() {
-  const tbody = document.getElementById('paginated-body');
-  const start = (currentPageNum - 1) * rowsPerPage;
-  const end = start + rowsPerPage;
-  const rows = products.slice(start, end);
-  tbody.innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
-  const totalPages = Math.ceil(products.length / rowsPerPage);
-  document.getElementById('page-info').textContent = `Page ${currentPageNum} of ${totalPages}`;
-  document.getElementById('btn-prev').disabled = currentPageNum === 1;
-  document.getElementById('btn-next').disabled = currentPageNum === totalPages;
-}
-
-function prevPage() { if (currentPageNum > 1) { currentPageNum--; renderPaginatedTable(); } }
-function nextPage() { if (currentPageNum < Math.ceil(products.length / rowsPerPage)) { currentPageNum++; renderPaginatedTable(); } }
-
-// ─── Alerts ───
-function triggerAlert() {
-  alert('This is a simple alert dialog!');
-  document.getElementById('alert-output').textContent = 'Alert accepted.';
-}
-
-function triggerConfirm() {
-  const result = confirm('Do you want to continue?');
-  document.getElementById('alert-output').textContent = `Confirm result: ${result ? 'OK (true)' : 'Cancel (false)'}`;
-}
-
-function triggerPrompt() {
-  const val = prompt('Enter your name:', 'QSpiders');
-  document.getElementById('alert-output').textContent = val !== null ? `Prompt value: "${val}"` : 'Prompt cancelled.';
-}
-
-function showAlert(type, msg) {
-  const div = document.createElement('div');
-  div.className = `alert alert-${type}`;
-  div.id = `alert-${type}-${Date.now()}`;
-  div.textContent = msg;
-  document.getElementById('custom-alerts').prepend(div);
-  setTimeout(() => div.remove(), 4000);
-}
-
-// ─── Modal ───
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-
-function closeModal(id, action) {
-  document.getElementById(id).classList.remove('open');
-  document.getElementById('modal-output').textContent = `Modal "${id}" closed with action: ${action}`;
-}
-
-// ─── Tabs ───
-function switchTab(num) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i + 1 === num));
-  document.querySelectorAll('.tab-panel').forEach((p, i) => p.classList.toggle('active', i + 1 === num));
-}
-
-// ─── Accordion ───
-function toggleAccordion(id) {
-  document.getElementById(id).classList.toggle('open');
-}
-
-// ─── Drag & Drop (sortable) ───
-let dragSrc = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderTable();
-  initDrag();
-  renderPaginatedTable();
-  initInfiniteList();
-});
-
-function initDrag() {
-  document.querySelectorAll('#drag-list .drag-item').forEach(item => {
-    item.addEventListener('dragstart', e => { dragSrc = e.target; e.target.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-    item.addEventListener('dragend', e => e.target.classList.remove('dragging'));
-    item.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
-    item.addEventListener('drop', e => {
-      e.preventDefault();
-      if (dragSrc !== e.currentTarget) {
-        const list = document.getElementById('drag-list');
-        const items = [...list.querySelectorAll('.drag-item')];
-        const fromIdx = items.indexOf(dragSrc);
-        const toIdx = items.indexOf(e.currentTarget);
-        if (fromIdx < toIdx) list.insertBefore(dragSrc, e.currentTarget.nextSibling);
-        else list.insertBefore(dragSrc, e.currentTarget);
-      }
-    });
+    `;
+    tbody.appendChild(tr);
   });
 }
 
-let dzDragging = null;
-function dzDragStart(e) { dzDragging = e.target; }
-function dzDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
-function dzDrop(e) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('dragover');
-  if (dzDragging) {
-    const clone = dzDragging.cloneNode(true);
-    e.currentTarget.innerHTML = '';
-    e.currentTarget.appendChild(clone);
-    e.currentTarget.style.border = '2px solid var(--accent)';
-    e.currentTarget.style.background = 'rgba(0,229,160,0.05)';
-    dzDragging.remove();
+// ADD ROW
+function addTableRow() {
+  const name   = document.getElementById('add-name').value.trim();
+  const course = document.getElementById('add-course').value;
+  const batch  = document.getElementById('add-batch').value.trim();
+  const status = document.getElementById('add-status').value;
+  const score  = parseInt(document.getElementById('add-score').value);
+
+  if (!name || !course || !batch || !status || isNaN(score)) {
+    setOut('table-output', '⚠️ Please fill all fields before adding a row.');
+    return;
   }
+  tableData.push({ id: nextId++, name, course, batch, status, score });
+  renderTable();
+  // Clear form
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-course').value = '';
+  document.getElementById('add-batch').value = '';
+  document.getElementById('add-status').value = '';
+  document.getElementById('add-score').value = '';
+  setOut('table-output', `✅ Row added: ${name} (ID: ${nextId - 1})`);
+}
+
+// EDIT — open modal
+function openEditModal(id) {
+  const row = tableData.find(r => r.id === id);
+  if (!row) return;
+  document.getElementById('edit-row-id').value = id;
+  document.getElementById('edit-name').value   = row.name;
+  document.getElementById('edit-course').value = row.course;
+  document.getElementById('edit-batch').value  = row.batch;
+  document.getElementById('edit-status').value = row.status;
+  document.getElementById('edit-score').value  = row.score;
+  openModal('edit-modal');
+}
+
+// EDIT — save
+function saveEdit() {
+  const id     = parseInt(document.getElementById('edit-row-id').value);
+  const name   = document.getElementById('edit-name').value.trim();
+  const course = document.getElementById('edit-course').value;
+  const batch  = document.getElementById('edit-batch').value.trim();
+  const status = document.getElementById('edit-status').value;
+  const score  = parseInt(document.getElementById('edit-score').value);
+
+  if (!name || !batch || isNaN(score)) {
+    alert('Please fill all fields.');
+    return;
+  }
+  const idx = tableData.findIndex(r => r.id === id);
+  if (idx !== -1) {
+    tableData[idx] = { id, name, course, batch, status, score };
+    renderTable();
+    setOut('table-output', `✅ Row ${id} updated: ${name}`);
+  }
+  closeModal('edit-modal');
+}
+
+// DELETE — open confirm modal
+function openDeleteModal(id) {
+  document.getElementById('delete-row-id').value = id;
+  openModal('delete-modal');
+}
+
+// DELETE — confirm
+function confirmDelete() {
+  const id  = parseInt(document.getElementById('delete-row-id').value);
+  const row = tableData.find(r => r.id === id);
+  tableData  = tableData.filter(r => r.id !== id);
+  renderTable();
+  setOut('table-output', `🗑️ Row ${id} deleted: ${row ? row.name : ''}`);
+  closeModal('delete-modal');
+}
+
+// ─── Pagination Table ───
+const products = [
+  { p: 'Selenium IDE',      cat: 'Testing',     price: 'Free',   stock: '∞' },
+  { p: 'TestNG Plugin',     cat: 'Framework',   price: '$0',     stock: '∞' },
+  { p: 'Allure Report',     cat: 'Reporting',   price: 'Free',   stock: '∞' },
+  { p: 'JMeter',            cat: 'Performance', price: 'Free',   stock: '∞' },
+  { p: 'Postman',           cat: 'API',         price: '$12/mo', stock: '50' },
+  { p: 'IntelliJ IDEA',     cat: 'IDE',         price: '$249/yr',stock: '30' },
+  { p: 'Jenkins',           cat: 'CI/CD',       price: 'Free',   stock: '∞' },
+  { p: 'Docker Desktop',    cat: 'DevOps',      price: '$21/mo', stock: '∞' },
+  { p: 'GitHub Actions',    cat: 'CI/CD',       price: '$0',     stock: '∞' },
+  { p: 'Appium Inspector',  cat: 'Mobile',      price: 'Free',   stock: '∞' },
+  { p: 'Cypress Studio',    cat: 'Testing',     price: '$75/mo', stock: '∞' },
+  { p: 'Maven',             cat: 'Build',       price: 'Free',   stock: '∞' },
+];
+let currentPage = 1; const perPage = 4;
+function renderPaged() {
+  const start = (currentPage - 1) * perPage;
+  const rows  = products.slice(start, start + perPage);
+  const tbody = document.getElementById('paginated-body');
+  if (!tbody) return;
+  tbody.innerHTML = rows.map((r, i) => `<tr><td>${start + i + 1}</td><td>${r.p}</td><td>${r.cat}</td><td>${r.price}</td><td>${r.stock}</td></tr>`).join('');
+  const total = Math.ceil(products.length / perPage);
+  document.getElementById('page-info').textContent = `Page ${currentPage} of ${total}`;
+  document.getElementById('btn-prev').disabled = currentPage === 1;
+  document.getElementById('btn-next').disabled = currentPage === total;
+}
+function prevPage() { if (currentPage > 1) { currentPage--; renderPaged(); } }
+function nextPage() { if (currentPage < Math.ceil(products.length / perPage)) { currentPage++; renderPaged(); } }
+
+// ─── Modals ───
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── Tabs ───
+function switchTab(n) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-btn-' + n).classList.add('active');
+  document.getElementById('tab-panel-' + n).classList.add('active');
+}
+
+// ─── Accordion ───
+function toggleAccordion(id) { document.getElementById(id).classList.toggle('open'); }
+
+// ─── Alerts ───
+function triggerAlert() { alert('This is a simple browser alert!'); setOut('alert-output', 'Alert dismissed.'); }
+function triggerConfirm() { const r = confirm('Do you confirm this action?'); setOut('alert-output', r ? 'Confirmed ✓' : 'Cancelled ✗'); }
+function triggerPrompt() { const r = prompt('Enter your name:'); setOut('alert-output', r !== null ? 'Entered: ' + r : 'Cancelled'); }
+function showAlert(type, msg) {
+  const div = document.createElement('div');
+  div.className = 'alert alert-' + type;
+  div.textContent = msg;
+  const container = document.getElementById('custom-alerts');
+  container.prepend(div);
+  setTimeout(() => div.remove(), 4000);
 }
 
 // ─── Login ───
 function doLogin() {
   const u = document.getElementById('login-username').value;
   const p = document.getElementById('login-password').value;
-  const res = document.getElementById('login-result');
-  if (u === 'admin' && p === 'admin123') {
-    res.innerHTML = '<div class="alert alert-success">✅ Login successful! Welcome, admin.</div>';
-  } else if (!u || !p) {
-    res.innerHTML = '<div class="alert alert-warning">⚠️ Please enter username and password.</div>';
-  } else {
-    res.innerHTML = '<div class="alert alert-error">❌ Invalid credentials. Try admin / admin123</div>';
-  }
+  setOut('login-output', u === 'admin' && p === 'admin123' ? '✅ Login successful! Welcome, admin.' : '❌ Invalid credentials. Try admin / admin123');
 }
 
 // ─── Registration ───
 function doRegister() {
   const fname = document.getElementById('reg-fname').value;
-  const email = document.getElementById('reg-email').value;
-  const terms = document.getElementById('reg-terms').checked;
-  const res = document.getElementById('reg-result');
-  if (!fname || !email) {
-    res.innerHTML = '<div class="alert alert-error">❌ Please fill in all required fields.</div>';
-  } else if (!terms) {
-    res.innerHTML = '<div class="alert alert-warning">⚠️ Please accept the Terms & Conditions.</div>';
-  } else {
-    res.innerHTML = `<div class="alert alert-success">✅ Registration successful! Welcome, ${fname}.</div>`;
-  }
+  const terms = document.getElementById('chk-terms').checked;
+  if (!fname) { setOut('register-output', '⚠️ Please fill all required fields.'); return; }
+  if (!terms) { setOut('register-output', '⚠️ You must agree to the Terms & Conditions.'); return; }
+  setOut('register-output', '✅ Registration successful! Welcome, ' + fname);
 }
-
-function resetRegForm() {
-  ['reg-fname','reg-lname','reg-email','reg-phone','reg-username','reg-password','reg-confirm-password'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('reg-course').value = '';
-  document.getElementById('reg-terms').checked = false;
-  document.querySelectorAll('input[name="reg-gender"]').forEach(r => r.checked = false);
-  document.getElementById('reg-result').innerHTML = '';
-}
+function resetRegister() { document.getElementById('page-register').querySelectorAll('input, select').forEach(el => { if (el.type === 'checkbox' || el.type === 'radio') el.checked = false; else el.value = ''; }); setOut('register-output', '// form reset'); }
 
 // ─── Form Validation ───
 function validateForm() {
-  let valid = true;
-  const name = document.getElementById('val-name').value.trim();
+  const results = [];
+  const name  = document.getElementById('val-name').value.trim();
   const email = document.getElementById('val-email').value.trim();
   const phone = document.getElementById('val-phone').value.trim();
-  const pass = document.getElementById('val-pass').value;
-
-  const setErr = (id, msg) => { document.getElementById(id).textContent = msg; };
-
-  setErr('err-name', !name ? '✗ Name is required.' : name.length < 3 ? '✗ Name must be at least 3 characters.' : '');
-  if (!name || name.length < 3) valid = false;
-
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  setErr('err-email', !email ? '✗ Email is required.' : !emailRe.test(email) ? '✗ Enter a valid email address.' : '');
-  if (!email || !emailRe.test(email)) valid = false;
-
-  setErr('err-phone', !phone ? '✗ Phone is required.' : !/^\d{10}$/.test(phone) ? '✗ Enter exactly 10 digits.' : '');
-  if (!phone || !/^\d{10}$/.test(phone)) valid = false;
-
-  const passRe = /^(?=.*\d).{8,}$/;
-  setErr('err-pass', !pass ? '✗ Password is required.' : !passRe.test(pass) ? '✗ Min 8 chars with at least 1 number.' : '');
-  if (!pass || !passRe.test(pass)) valid = false;
-
-  document.getElementById('val-success').innerHTML = valid
-    ? '<div class="alert alert-success">✅ All validations passed! Form submitted successfully.</div>'
-    : '<div class="alert alert-error">❌ Please fix the errors above.</div>';
+  const pass  = document.getElementById('val-pass').value;
+  if (!name || name.length < 3) results.push({ t: 'error', m: '❌ Name must be at least 3 characters.' });
+  else results.push({ t: 'success', m: '✅ Name is valid.' });
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) results.push({ t: 'error', m: '❌ Please enter a valid email.' });
+  else results.push({ t: 'success', m: '✅ Email is valid.' });
+  if (!/^\d{10}$/.test(phone)) results.push({ t: 'error', m: '❌ Phone must be exactly 10 digits.' });
+  else results.push({ t: 'success', m: '✅ Phone is valid.' });
+  if (pass.length < 8 || !/\d/.test(pass)) results.push({ t: 'error', m: '❌ Password must be 8+ chars with at least 1 number.' });
+  else results.push({ t: 'success', m: '✅ Password is valid.' });
+  document.getElementById('val-output').innerHTML = results.map(r => `<div class="alert alert-${r.t}">${r.m}</div>`).join('');
 }
 
-// ─── Dynamic Elements ───
-function loadDelayed() {
-  const btn = document.getElementById('btn-load-element');
-  btn.disabled = true;
-  document.getElementById('delayed-loader').style.display = 'block';
-  document.getElementById('delayed-element').style.display = 'none';
+// ─── Dynamic ───
+function loadDynamic() {
+  document.getElementById('delayed-content').style.display = 'none';
+  document.getElementById('loading-indicator').style.display = 'block';
   setTimeout(() => {
-    document.getElementById('delayed-loader').style.display = 'none';
-    document.getElementById('delayed-element').style.display = 'block';
-    btn.disabled = false;
+    document.getElementById('loading-indicator').style.display = 'none';
+    document.getElementById('delayed-content').style.display = 'block';
   }, 3000);
 }
-
-let progressInterval = null;
+let progressInt = null;
 function startProgress() {
-  let pct = 0;
-  clearInterval(progressInterval);
-  progressInterval = setInterval(() => {
-    pct += 5;
-    document.getElementById('progress-bar').style.width = pct + '%';
-    document.getElementById('progress-pct').textContent = pct + '%';
-    if (pct >= 100) { clearInterval(progressInterval); document.getElementById('progress-pct').textContent = '✅ Done!'; }
-  }, 120);
+  clearInterval(progressInt); let val = 0;
+  progressInt = setInterval(() => {
+    val = Math.min(val + 2, 100);
+    document.getElementById('progress-fill').style.width = val + '%';
+    document.getElementById('progress-val').textContent = val;
+    if (val >= 100) clearInterval(progressInt);
+  }, 60);
 }
-
-function resetProgress() {
-  clearInterval(progressInterval);
-  document.getElementById('progress-bar').style.width = '0%';
-  document.getElementById('progress-pct').textContent = '0%';
-}
-
-let dynRowId = 1;
-const names = ['Alice','Bob','Charlie','David','Eva','Frank','Grace','Henry'];
+function resetProgress() { clearInterval(progressInt); document.getElementById('progress-fill').style.width = '0%'; document.getElementById('progress-val').textContent = '0'; }
+let dynId = 1;
 function addDynamicRow() {
-  const tbody = document.getElementById('dynamic-tbody');
+  const names = ['Ravi K', 'Priya M', 'Ankit S', 'Deepa R', 'Suresh P', 'Lakshmi V'];
+  const tbody = document.getElementById('dynamic-table-body');
   const tr = document.createElement('tr');
-  tr.id = `dyn-row-${dynRowId}`;
-  const name = names[Math.floor(Math.random() * names.length)];
-  const score = Math.floor(Math.random() * 40) + 60;
-  tr.innerHTML = `<td>${dynRowId}</td><td>${name}</td><td>${score}</td><td>${new Date().toLocaleTimeString()}</td>`;
-  tbody.appendChild(tr);
-  dynRowId++;
+  tr.innerHTML = `<td>${dynId++}</td><td>${names[Math.floor(Math.random()*names.length)]}</td><td>${Math.floor(Math.random()*40+60)}</td><td>${new Date().toLocaleTimeString()}</td>`;
+  tbody.prepend(tr);
 }
 
-// ─── Infinite scroll ───
+// ─── Infinite Scroll ───
 let infiniteCount = 0;
-
-function initInfiniteList() {
-  const list = document.getElementById('infinite-list');
-  for (let i = 1; i <= 8; i++) {
-    addInfiniteItem(i);
-    infiniteCount = i;
-  }
+function initInfinite() {
+  const c = document.getElementById('infinite-items');
+  if (!c) return;
+  for (let i = 0; i < 5; i++) { const d = document.createElement('div'); d.textContent = 'Item ' + (++infiniteCount); d.style.cssText = 'padding:10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;color:var(--muted);'; c.appendChild(d); }
 }
-
-function addInfiniteItem(n) {
-  const el = document.createElement('div');
-  el.id = `inf-item-${n}`;
-  el.style.cssText = 'padding:8px 0;border-bottom:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;';
-  el.textContent = `Item #${n} — loaded dynamically`;
-  document.getElementById('infinite-list').appendChild(el);
-}
-
 function checkInfiniteScroll(el) {
-  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 20) {
-    for (let i = 1; i <= 5; i++) {
-      infiniteCount++;
-      addInfiniteItem(infiniteCount);
-    }
+  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 10) {
+    const c = document.getElementById('infinite-items');
+    for (let i = 0; i < 3; i++) { const d = document.createElement('div'); d.textContent = 'Item ' + (++infiniteCount); d.style.cssText = 'padding:10px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;color:var(--muted);'; c.appendChild(d); }
   }
 }
+
+// ─── Drag & Drop ───
+let dragSrc = null;
+function initDrag() {
+  document.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('dragstart', function() { dragSrc = this; this.classList.add('dragging'); });
+    item.addEventListener('dragend', function() { this.classList.remove('dragging'); });
+    item.addEventListener('dragover', function(e) { e.preventDefault(); });
+    item.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (dragSrc !== this) {
+        const list = this.parentNode;
+        const items = [...list.children];
+        const srcIdx = items.indexOf(dragSrc);
+        const tgtIdx = items.indexOf(this);
+        if (srcIdx < tgtIdx) list.insertBefore(dragSrc, this.nextSibling);
+        else list.insertBefore(dragSrc, this);
+      }
+    });
+  });
+}
+
+// ─── Init ───
+window.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+  renderPaged();
+  initDrag();
+  initInfinite();
+});
 </script>
 </body>
 </html>
