@@ -469,6 +469,7 @@ iframe { width: 100%; height: 220px; border: none; background: white; display: b
         </div>
       </div>
       <button class="btn btn-primary" id="btn-add-row" onclick="addTableRow()">+ Add Row</button>
+      <button class="btn btn-ghost" id="btn-reset-table" onclick="resetTableData()" style="margin-left:4px;">🔄 Reset to Default</button>
       <div class="output-box" id="table-output" style="margin-top:12px;">// table interactions appear here</div>
     </div>
 
@@ -889,16 +890,33 @@ function getMultiSelect() {
 function dropdownChanged(id, outId) { setOut(outId, 'Selected: ' + document.getElementById(id).value); }
 
 // ═══════════════════════════════════════════════════════
-// TABLE — Add / Edit / Delete (THE FIXED SECTION)
+// TABLE — Add / Edit / Delete with localStorage
 // ═══════════════════════════════════════════════════════
-let tableData = [
+const DEFAULT_DATA = [
   { id: 1, name: 'Alice Johnson',  course: 'Selenium with Java',   batch: 'B10', status: 'Active',    score: 92 },
   { id: 2, name: 'Bob Martinez',   course: 'Cypress',              batch: 'B11', status: 'Completed', score: 78 },
   { id: 3, name: 'Carol Lee',      course: 'Playwright',           batch: 'B10', status: 'Active',    score: 85 },
   { id: 4, name: 'David Kim',      course: 'Selenium with Python', batch: 'B12', status: 'Inactive',  score: 60 },
   { id: 5, name: 'Eva Green',      course: 'Java Full Stack',      batch: 'B11', status: 'Active',    score: 95 },
 ];
-let nextId = 6;
+
+function loadTableData() {
+  const saved = localStorage.getItem('demoapp-table');
+  return saved ? JSON.parse(saved) : DEFAULT_DATA;
+}
+function saveTableData() {
+  localStorage.setItem('demoapp-table', JSON.stringify(tableData));
+}
+function getNextId() {
+  const saved = localStorage.getItem('demoapp-nextid');
+  return saved ? parseInt(saved) : 6;
+}
+function saveNextId() {
+  localStorage.setItem('demoapp-nextid', nextId);
+}
+
+let tableData = loadTableData();
+let nextId = getNextId();
 
 function statusBadge(status) {
   const map = { Active: 'badge-green', Inactive: 'badge-red', Completed: 'badge-purple' };
@@ -941,6 +959,8 @@ function addTableRow() {
     return;
   }
   tableData.push({ id: nextId++, name, course, batch, status, score });
+  saveTableData();
+  saveNextId();
   renderTable();
   // Clear form
   document.getElementById('add-name').value = '';
@@ -980,6 +1000,7 @@ function saveEdit() {
   const idx = tableData.findIndex(r => r.id === id);
   if (idx !== -1) {
     tableData[idx] = { id, name, course, batch, status, score };
+    saveTableData();
     renderTable();
     setOut('table-output', `✅ Row ${id} updated: ${name}`);
   }
@@ -997,12 +1018,23 @@ function confirmDelete() {
   const id  = parseInt(document.getElementById('delete-row-id').value);
   const row = tableData.find(r => r.id === id);
   tableData  = tableData.filter(r => r.id !== id);
+  saveTableData();
   renderTable();
   setOut('table-output', `🗑️ Row ${id} deleted: ${row ? row.name : ''}`);
   closeModal('delete-modal');
 }
 
-// ─── Pagination Table ───
+// RESET to default data
+function resetTableData() {
+  if (confirm('Reset table to default data? All your changes will be lost.')) {
+    tableData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    nextId = 6;
+    saveTableData();
+    saveNextId();
+    renderTable();
+    setOut('table-output', '🔄 Table reset to default data.');
+  }
+}
 const products = [
   { p: 'Selenium IDE',      cat: 'Testing',     price: 'Free',   stock: '∞' },
   { p: 'TestNG Plugin',     cat: 'Framework',   price: '$0',     stock: '∞' },
